@@ -1,0 +1,13 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sparkle-grad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F472B6" />
+      <stop offset="50%" stop-color="#C084FC" />
+      <stop offset="100%" stop-color="#818CF8" />
+    </linearGradient>
+  </defs>
+  <path
+    d="M24 0 C24 13.255 13.255 24 0 24 C13.255 24 24 34.745 24 48 C24 34.745 34.745 24 48 24 C34.745 24 24 13.255 24 0 Z"
+    fill="url(#sparkle-grad)"
+  />
+</svg>

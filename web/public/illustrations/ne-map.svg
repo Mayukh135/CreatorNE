@@ -1,14 +1,67 @@
-<svg width="620" height="520" viewBox="0 0 620 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="480" height="420" viewBox="0 0 480 420" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="paint" x1="92" y1="62" x2="525" y2="454" gradientUnits="userSpaceOnUse"><stop stop-color="#A78BFA"/><stop offset=".52" stop-color="#7C3AED"/><stop offset="1" stop-color="#2563EB"/></linearGradient>
-    <filter id="shadow" x="0" y="0" width="620" height="520" filterUnits="userSpaceOnUse"><feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#6D28D9" flood-opacity=".20"/></filter>
+    <!-- Map Shape Gradient -->
+    <linearGradient id="ne-mesh-gradient" x1="60" y1="40" x2="420" y2="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#A78BFA" />
+      <stop offset="45%" stop-color="#7C3AED" />
+      <stop offset="85%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#2563EB" />
+    </linearGradient>
+
+    <!-- Outer Soft Glow Shadow -->
+    <filter id="ne-mesh-glow" x="0" y="0" width="480" height="420" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#7C3AED" flood-opacity="0.35" />
+    </filter>
   </defs>
-  <g filter="url(#shadow)">
-    <path d="M101 105 142 76l44 25 32-31 42 18 36-26 40 38-6 35 34 20-19 39 29 30-23 40 24 38-40 17-7 43-51 7-27 35-47-19-42 21-31-34-44-1-20-37-35-22 18-43-25-31 23-37-7-46 40-22-6-44 41-14 14-36Z" fill="url(#paint)"/>
-    <path d="m142 76 7 56 37-31 34 46 40-59 36 51 40-39 46 55-28 43 29 30-49 26 24 49-40 17-7 43-78-10-27 35-47-19-42 21-31-34 14-55-35-22 18-43-25-31 30-47-7-46 40-22-6-44 41-14Z" stroke="white" stroke-opacity=".32" stroke-width="3" stroke-linejoin="round"/>
+
+  <!-- Glowing Map Polygon Mesh -->
+  <g filter="url(#ne-mesh-glow)">
+    <!-- Base Polygon Body -->
+    <path
+      d="M140 70 L210 40 L275 80 L345 35 L405 95 L395 160 L445 195 L410 260 L435 320 L370 345 L360 400 L280 390 L240 435 L165 405 L100 425 L50 370 L80 300 L30 250 L65 190 L50 120 Z"
+      fill="url(#ne-mesh-gradient)"
+    />
+
+    <!-- Internal Facet Triangles / Polygons for 3D Gem Depth -->
+    <path
+      d="M140 70 L210 135 L275 80 L345 145 L405 95 L330 205 L445 195 L370 255 L435 320 L330 330 L360 400 L260 330 L240 435 L180 340 L100 425 L120 320 L50 370 L105 255 L30 250 L115 190 L50 120 L140 145 Z"
+      fill="white"
+      fill-opacity="0.12"
+      stroke="white"
+      stroke-opacity="0.25"
+      stroke-width="1.5"
+      stroke-linejoin="round"
+    />
   </g>
-  <g fill="white" fill-opacity=".95">
-    <circle cx="211" cy="155" r="6"/><circle cx="305" cy="150" r="6"/><circle cx="365" cy="226" r="6"/><circle cx="280" cy="285" r="6"/><circle cx="177" cy="283" r="6"/><circle cx="244" cy="362" r="6"/>
+
+  <!-- Interconnecting Dashed Network Path -->
+  <path
+    d="M140 145 L210 135 L275 180 L330 205 L370 255 L260 330 L180 340 L120 320 L105 255 Z"
+    stroke="white"
+    stroke-opacity="0.75"
+    stroke-width="2"
+    stroke-dasharray="4 6"
+    stroke-linecap="round"
+  />
+
+  <path
+    d="M210 135 L370 255 M275 180 L180 340 M140 145 L330 205"
+    stroke="white"
+    stroke-opacity="0.4"
+    stroke-width="1.5"
+    stroke-dasharray="3 5"
+  />
+
+  <!-- Active Node Dots -->
+  <g fill="white">
+    <circle cx="140" cy="145" r="7" filter="drop-shadow(0 0 6px rgba(255,255,255,0.9))" />
+    <circle cx="210" cy="135" r="7" filter="drop-shadow(0 0 6px rgba(255,255,255,0.9))" />
+    <circle cx="275" cy="180" r="8" filter="drop-shadow(0 0 8px rgba(255,255,255,1))" />
+    <circle cx="330" cy="205" r="7" filter="drop-shadow(0 0 6px rgba(255,255,255,0.9))" />
+    <circle cx="370" cy="255" r="8" filter="drop-shadow(0 0 8px rgba(255,255,255,1))" />
+    <circle cx="260" cy="330" r="7" filter="drop-shadow(0 0 6px rgba(255,255,255,0.9))" />
+    <circle cx="180" cy="340" r="7" filter="drop-shadow(0 0 6px rgba(255,255,255,0.9))" />
+    <circle cx="120" cy="320" r="6" filter="drop-shadow(0 0 6px rgba(255,255,255,0.9))" />
+    <circle cx="105" cy="255" r="6" filter="drop-shadow(0 0 6px rgba(255,255,255,0.9))" />
   </g>
-  <g stroke="white" stroke-opacity=".48" stroke-width="2" stroke-dasharray="5 7"><path d="M211 155 305 150l60 76-85 59-103-2 67 79"/></g>
 </svg>

@@ -1,13 +1,14 @@
-<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M60 8l7 20 20 7-20 7-7 20-7-20-20-7 20-7 7-20Z" fill="url(#g1)"/>
-  <path d="M96 38l4 11 11 4-11 4-4 11-4-11-11-4 11-4 4-11Z" fill="#FBBF24"/>
-  <path d="M24 60l3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8Z" fill="#06B6D4"/>
-  <path d="M76 84l3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8Z" fill="#E91E8C"/>
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M90 0 C90 49.706 49.706 90 0 90 C49.706 90 90 130.294 90 180 C90 130.294 130.294 90 180 90 C130.294 90 90 49.706 90 0 Z"
+    fill="url(#hero-sparkle-grad)"
+    fill-opacity="0.85"
+  />
   <defs>
-    <linearGradient id="g1" x1="22" y1="8" x2="98" y2="92" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#E91E8C"/>
-      <stop offset="0.5" stop-color="#7C3AED"/>
-      <stop offset="1" stop-color="#06B6D4"/>
+    <linearGradient id="hero-sparkle-grad" x1="0" y1="0" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C084FC" />
+      <stop offset="0.6" stop-color="#818CF8" />
+      <stop offset="1" stop-color="#38BDF8" />
     </linearGradient>
   </defs>
 </svg>
