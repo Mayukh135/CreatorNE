@@ -1,0 +1,184 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================================
+// Enums
+// ============================================================
+
+enum UserRole {
+  CREATOR
+  BRAND
+  ADMIN
+}
+
+enum UserStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+// ============================================================
+// Core Models
+// ============================================================
+
+model User {
+  id            String     @id @default(cuid())
+  email         String     @unique
+  phone         String?
+  role          UserRole
+  status        UserStatus @default(PENDING)
+  emailVerified Boolean    @default(false)
+  supabaseId    String     @unique // Links to Supabase Auth user
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  creatorProfile CreatorProfile?
+  brandProfile   BrandProfile?
+  sentMessages   Message[]                @relation("SentMessages")
+  conversations  ConversationParticipant[]
+
+  @@map("users")
+}
+
+model CreatorProfile {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name              String
+  slug              String   @unique
+  photo             String?  // Cloudinary URL
+  whatsApp          String?
+  state             String
+  city              String
+  languages         String[] // PostgreSQL array
+  category          String
+  socialLinks       Json     @default("{}") // { instagram, youtube, ... }
+  followers         Int      @default(0)
+  avgViews          Int      @default(0)
+  engagementRate    Float    @default(0)
+  bio               String?  @db.Text
+  portfolioMedia    String[] // Cloudinary URLs
+  previousCollabs   String[]
+  idVerificationUrl String?
+  bankDetails       Json?    // Encrypted, private
+  upiId             String?
+  isVerified        Boolean  @default(false)
+  isFeatured        Boolean  @default(false)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("creator_profiles")
+}
+
+model BrandProfile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  brandName     String
+  slug          String   @unique
+  contactPerson String
+  phone         String?
+  website       String?
+  logo          String?  // Cloudinary URL
+  industry      String?
+  budget        String?
+  campaignGoal  String?  @db.Text
+  targetState   String?
+  timeline      String?
+  isFeatured    Boolean  @default(false)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("brand_profiles")
+}
+
+// ============================================================
+// Content Models (Homepage dynamic data)
+// ============================================================
+
+model Category {
+  id           String @id @default(cuid())
+  name         String @unique
+  slug         String @unique
+  icon         String // Lucide icon name
+  creatorCount Int    @default(0)
+  sortOrder    Int    @default(0)
+
+  @@map("categories")
+}
+
+model Stat {
+  id    String @id @default(cuid())
+  key   String @unique // e.g., "verified_creators"
+  value String         // e.g., "500+"
+  label String         // e.g., "Verified Creators"
+
+  @@map("stats")
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  content   String   @db.Text
+  avatar    String?  // Cloudinary URL
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@map("testimonials")
+}
+
+// ============================================================
+// Messaging Models
+// ============================================================
+
+model Conversation {
+  id            String   @id @default(cuid())
+  lastMessageAt DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  participants ConversationParticipant[]
+  messages     Message[]
+
+  @@map("conversations")
+}
+
+model ConversationParticipant {
+  id             String       @id @default(cuid())
+  conversationId String
+  userId         String
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@map("conversation_participants")
+}
+
+model Message {
+  id             String    @id @default(cuid())
+  conversationId String
+  senderId       String
+  content        String    @db.Text
+  readAt         DateTime?
+  createdAt      DateTime  @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation("SentMessages", fields: [senderId], references: [id])
+
+  @@index([conversationId, createdAt])
+  @@map("messages")
+}

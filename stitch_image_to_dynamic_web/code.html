@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Creator Directory | CreatorNE</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-surface": "#151c27",
+                "primary-fixed-dim": "#d2bbff",
+                "outline-variant": "#ccc3d8",
+                "on-tertiary": "#ffffff",
+                "on-background": "#151c27",
+                "surface-container": "#e7eefe",
+                "inverse-primary": "#d2bbff",
+                "tertiary-fixed": "#ffd9e4",
+                "on-secondary-container": "#fffbff",
+                "on-tertiary-fixed-variant": "#8c0053",
+                "on-error": "#ffffff",
+                "on-primary-container": "#ede0ff",
+                "surface-container-highest": "#dce2f3",
+                "on-primary": "#ffffff",
+                "secondary-fixed": "#e2dfff",
+                "on-surface-variant": "#4a4455",
+                "tertiary": "#9b005c",
+                "primary-fixed": "#eaddff",
+                "tertiary-container": "#bf2076",
+                "inverse-surface": "#2a313d",
+                "error": "#ba1a1a",
+                "secondary-container": "#645efb",
+                "surface-container-low": "#f0f3ff",
+                "on-tertiary-fixed": "#3e0022",
+                "on-tertiary-container": "#ffdde7",
+                "primary": "#630ed4",
+                "outline": "#7b7487",
+                "primary-container": "#7c3aed",
+                "on-secondary-fixed-variant": "#3323cc",
+                "on-error-container": "#93000a",
+                "secondary": "#4b41e1",
+                "tertiary-fixed-dim": "#ffb0cd",
+                "surface-container-high": "#e2e8f8",
+                "surface-container-lowest": "#ffffff",
+                "background": "#f9f9ff",
+                "on-primary-fixed": "#25005a",
+                "on-primary-fixed-variant": "#5a00c6",
+                "on-secondary-fixed": "#0f0069",
+                "surface": "#f9f9ff",
+                "on-secondary": "#ffffff",
+                "inverse-on-surface": "#ebf1ff",
+                "surface-tint": "#732ee4",
+                "secondary-fixed-dim": "#c3c0ff",
+                "surface-bright": "#f9f9ff",
+                "error-container": "#ffdad6",
+                "surface-variant": "#dce2f3",
+                "surface-dim": "#d3daea"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+            },
+            "spacing": {
+                "md": "24px",
+                "gutter": "24px",
+                "sm": "12px",
+                "xl": "64px",
+                "margin-mobile": "16px",
+                "container-max": "1280px",
+                "base": "8px",
+                "lg": "40px",
+                "xs": "4px"
+            },
+            "fontFamily": {
+                "display-lg": ["Inter", "sans-serif"],
+                "body-lg": ["Inter", "sans-serif"],
+                "headline-lg": ["Inter", "sans-serif"],
+                "body-md": ["Inter", "sans-serif"],
+                "label-sm": ["Inter", "sans-serif"],
+                "body-sm": ["Inter", "sans-serif"],
+                "label-md": ["Inter", "sans-serif"],
+                "headline-md": ["Inter", "sans-serif"]
+            },
+            "fontSize": {
+                "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                "label-sm": ["12px", {"lineHeight": "14px", "fontWeight": "600"}],
+                "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .creator-card-shadow {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        .creator-card-shadow:hover {
+            box-shadow: 0px 10px 30px rgba(124, 58, 237, 0.1);
+            transform: translateY(-4px);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #7C3AED, #4F46E5);
+        }
+        .brand-gradient-text {
+            background: linear-gradient(to right, #630ed4, #4b41e1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface/70 backdrop-blur-xl shadow-sm h-20">
+<nav class="flex justify-between items-center w-full px-md md:px-lg max-w-container-max mx-auto h-full">
+<div class="flex items-center gap-xl">
+<a class="font-display-lg text-display-lg font-black bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary" href="#">
+                    CreatorNE
+                </a>
+<div class="hidden md:flex items-center gap-md">
+<a class="font-body-md text-body-md text-primary dark:text-primary-fixed-dim font-bold border-b-2 border-primary hover:text-primary transition-colors duration-200" href="#">Directory</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Marketplace</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Case Studies</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">About</a>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="hidden sm:block text-on-surface-variant font-label-md hover:text-primary transition-colors px-md py-sm">Login</button>
+<button class="primary-gradient text-on-primary px-md py-sm rounded-full font-label-md shadow-lg active:scale-95 transition-transform">Join as Creator</button>
+</div>
+</nav>
+</header>
+<main class="pt-20 min-h-screen">
+<!-- Hero & Advanced Search -->
+<section class="relative py-xl overflow-hidden">
+
+<div class="relative z-10 max-w-container-max mx-auto px-md md:px-lg">
+<div class="text-center mb-lg">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg mb-xs">Find the Voice of the Northeast</h1>
+<p class="text-on-surface-variant text-body-lg max-w-2xl mx-auto">Connect with 5,000+ vetted creators across Nagaland, Assam, Manipur, and beyond.</p>
+</div>
+<!-- Search Bar & Filters -->
+<div class="bg-surface-container-lowest p-sm md:p-base rounded-[2rem] shadow-xl max-w-4xl mx-auto flex flex-col md:flex-row items-stretch md:items-center gap-xs">
+<div class="flex-1 flex items-center px-md border-r-0 md:border-r border-outline-variant/30">
+<span class="material-symbols-outlined text-outline mr-sm">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-body-md placeholder:text-outline/60" placeholder="Search creators by name or niche..." type="text"/>
+</div>
+<div class="flex-1 flex items-center px-md border-r-0 md:border-r border-outline-variant/30">
+<span class="material-symbols-outlined text-outline mr-sm">category</span>
+<select class="w-full bg-transparent border-none focus:ring-0 text-body-md appearance-none">
+<option>All Categories</option>
+<option>Travel &amp; Adventure</option>
+<option>Traditional Food</option>
+<option>Modern Fashion</option>
+<option>Tech &amp; Gadgets</option>
+</select>
+</div>
+<div class="flex-1 flex items-center px-md">
+<span class="material-symbols-outlined text-outline mr-sm">location_on</span>
+<select class="w-full bg-transparent border-none focus:ring-0 text-body-md appearance-none">
+<option>All Locations</option>
+<option>Nagaland</option>
+<option>Assam</option>
+<option>Manipur</option>
+<option>Meghalaya</option>
+<option>Sikkim</option>
+</select>
+</div>
+<button class="primary-gradient text-on-primary px-lg py-md rounded-[1.5rem] font-label-md flex items-center justify-center gap-xs">
+                        Search
+                    </button>
+</div>
+</div>
+</section>
+<!-- Main Content Area -->
+<div class="max-w-container-max mx-auto px-md md:px-lg pb-xl flex gap-lg">
+<!-- Sidebar Filters (Collapsible on Mobile) -->
+<aside class="hidden lg:block w-72 flex-shrink-0 space-y-lg">
+<div>
+<h3 class="font-headline-md text-headline-md mb-md">Refine Results</h3>
+<div class="space-y-sm">
+<p class="font-label-md text-on-surface-variant uppercase tracking-wider text-[10px]">Platform</p>
+<div class="space-y-xs">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="rounded text-primary focus:ring-primary-container border-outline-variant" type="checkbox"/>
+<span class="text-body-sm group-hover:text-primary transition-colors">Instagram</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="rounded text-primary focus:ring-primary-container border-outline-variant" type="checkbox"/>
+<span class="text-body-sm group-hover:text-primary transition-colors">YouTube</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="rounded text-primary focus:ring-primary-container border-outline-variant" type="checkbox"/>
+<span class="text-body-sm group-hover:text-primary transition-colors">TikTok (Global)</span>
+</label>
+</div>
+</div>
+</div>
+<div class="h-[1px] bg-outline-variant/30"></div>
+<div>
+<p class="font-label-md text-on-surface-variant uppercase tracking-wider text-[10px] mb-sm">Engagement Rate</p>
+<div class="space-y-sm">
+<input class="w-full h-2 bg-surface-container-high rounded-full appearance-none cursor-pointer accent-primary" type="range"/>
+<div class="flex justify-between text-label-sm text-outline">
+<span>1%</span>
+<span>10%+</span>
+</div>
+</div>
+</div>
+<div class="h-[1px] bg-outline-variant/30"></div>
+<div>
+<p class="font-label-md text-on-surface-variant uppercase tracking-wider text-[10px] mb-sm">Price Range (per post)</p>
+<div class="grid grid-cols-2 gap-sm">
+<input class="bg-surface-container-low border-none rounded-lg text-body-sm px-sm py-xs" placeholder="Min" type="text"/>
+<input class="bg-surface-container-low border-none rounded-lg text-body-sm px-sm py-xs" placeholder="Max" type="text"/>
+</div>
+</div>
+<div class="h-[1px] bg-outline-variant/30"></div>
+<div>
+<p class="font-label-md text-on-surface-variant uppercase tracking-wider text-[10px] mb-sm">Verification Status</p>
+<label class="flex items-center gap-sm cursor-pointer group">
+<input class="rounded text-primary focus:ring-primary-container border-outline-variant" type="checkbox"/>
+<span class="text-body-sm group-hover:text-primary transition-colors">Verified Only</span>
+<span class="material-symbols-outlined text-secondary text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</label>
+</div>
+<div class="bg-primary-container/10 p-md rounded-xl border border-primary-container/20">
+<p class="font-headline-md text-primary text-[18px] mb-xs">Need Help?</p>
+<p class="text-body-sm text-on-surface-variant mb-md">Our concierge team can find the perfect match for your campaign.</p>
+<button class="w-full py-sm bg-white text-primary border border-primary font-label-md rounded-lg hover:bg-primary hover:text-white transition-all">Talk to an Expert</button>
+</div>
+</aside>
+<!-- Creator Grid -->
+<div class="flex-1">
+<div class="flex justify-between items-center mb-md">
+<p class="text-on-surface-variant font-body-sm"><span class="font-bold text-on-surface">1,248</span> creators found in <span class="font-bold text-on-surface">All Locations</span></p>
+<div class="flex items-center gap-sm">
+<span class="text-label-sm text-outline">Sort by:</span>
+<select class="bg-transparent border-none text-label-md focus:ring-0 cursor-pointer">
+<option>Relevance</option>
+<option>Follower Count</option>
+<option>Engagement Rate</option>
+<option>Newly Joined</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-md">
+<!-- Creator Card 1 -->
+<div class="bg-white rounded-xl creator-card-shadow overflow-hidden group">
+<div class="relative h-64">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A professional portrait of a stylish female creator from Nagaland, wearing contemporary ethnic-inspired fashion with intricate beadwork. She is standing against a soft-focus background of mist-covered green hills, creating an atmosphere of serene beauty and cultural pride. The lighting is soft and natural, emphasizing her warm skin tone and the vibrant colors of her attire. The image has a premium, high-fashion aesthetic with a modern digital finish." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASh9lo088pweH6vRpWdRUu0RmBbXkc-elLZ9__rAbipXpx5e00X24M0mrNUJE9Mc0w2kefinf5sEZg__-7eWy8CV4XV7dxRUxehBmwjIF0nCp0OvuutfxK6VUAV-igIGFBbYuvst3ozUm4T79noJdtOeBJVTEwkotzL-8rh_bQEC-l05OnhCKiJnzdxnGkHsl88TDyTvDL7Obac7Lt5tt7pvUTVR0EZjGLGHHHCVbvJh8mHNx80ahn"/>
+<div class="absolute top-sm right-sm bg-white/90 backdrop-blur-md px-sm py-xs rounded-full flex items-center gap-xs shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Verified</span>
+</div>
+</div>
+<div class="p-md space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline-md text-[20px] mb-xs">Sentila Longkumer</h4>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="text-body-sm">Kohima, Nagaland</span>
+</div>
+</div>
+<span class="bg-primary-container/10 text-primary px-sm py-xs rounded-lg text-label-sm">Fashion</span>
+</div>
+<div class="grid grid-cols-2 gap-md p-sm bg-surface-container-low rounded-lg">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Followers</p>
+<p class="text-headline-md text-[18px]">142K</p>
+</div>
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Eng. Rate</p>
+<p class="text-headline-md text-[18px] text-secondary">5.2%</p>
+</div>
+</div>
+<div class="flex gap-sm">
+<button class="flex-1 py-sm bg-white border border-outline-variant text-on-surface font-label-md rounded-lg hover:border-primary transition-colors">View Profile</button>
+<button class="flex-1 py-sm primary-gradient text-on-primary font-label-md rounded-lg shadow-md active:scale-95 transition-transform">Hire Now</button>
+</div>
+</div>
+</div>
+<!-- Creator Card 2 -->
+<div class="bg-white rounded-xl creator-card-shadow overflow-hidden group">
+<div class="relative h-64">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A male adventure travel creator in Assam, showcasing a high-end mountain bike on a rugged forest trail. He is dressed in professional cycling gear with a background of lush tropical jungle foliage and sunlight filtering through the canopy. The mood is energetic and inspiring, capturing the essence of exploration in Northeast India. High-quality digital photography with vibrant greens and earthy tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDzBIXjqYgzT49EdDbW-8kOdEVYf0cI8LMOXaUo6yEvi9Bd-fB6Ygl9E4vd6V_icjK5r9TIYf0UCKK60ou_gF0ZBlPOgFqqSqNJUvjFIsAoDkllD7iym_gqKYM0ax42TUTO2-ujXH35ow3BSL52XqKV7Ybr6jbLfvkMWyFX4br42oaDEH-n3bDmLbSoLaVszOCYIaeB4CEBSyhrlIS5JRmjTBXuoY-3PzoKv5jJ472ctyAMu9wCpe-3"/>
+<div class="absolute top-sm right-sm bg-white/90 backdrop-blur-md px-sm py-xs rounded-full flex items-center gap-xs shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Verified</span>
+</div>
+</div>
+<div class="p-md space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline-md text-[20px] mb-xs">Bikram Das</h4>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="text-body-sm">Guwahati, Assam</span>
+</div>
+</div>
+<span class="bg-primary-container/10 text-primary px-sm py-xs rounded-lg text-label-sm">Travel</span>
+</div>
+<div class="grid grid-cols-2 gap-md p-sm bg-surface-container-low rounded-lg">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Followers</p>
+<p class="text-headline-md text-[18px]">89K</p>
+</div>
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Eng. Rate</p>
+<p class="text-headline-md text-[18px] text-secondary">4.8%</p>
+</div>
+</div>
+<div class="flex gap-sm">
+<button class="flex-1 py-sm bg-white border border-outline-variant text-on-surface font-label-md rounded-lg hover:border-primary transition-colors">View Profile</button>
+<button class="flex-1 py-sm primary-gradient text-on-primary font-label-md rounded-lg shadow-md active:scale-95 transition-transform">Hire Now</button>
+</div>
+</div>
+</div>
+<!-- Creator Card 3 -->
+<div class="bg-white rounded-xl creator-card-shadow overflow-hidden group">
+<div class="relative h-64">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A close-up, high-end food photography shot of a female culinary creator from Meghalaya preparing a traditional dish. She is captured in a modern, sun-drenched kitchen with traditional bamboo accents. Steam rises from a beautifully presented platter of local cuisine. The lighting is warm and inviting, highlighting the rich textures and fresh ingredients. The style is sophisticated, blending traditional heritage with contemporary culinary presentation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6WdXWPd3W9MzcSWLHL67NsL03E54HGdjOVCFjzLvyU7FEEMCXRy_SKvQZbF91hiHZnlM4mHrGCXYyS0rIEhURfFkgPqF7xkvYRiEZLUwOccvoRRc04TQ15Uo665mL-a9ur6wOq071hQAc1nc4My4OFO4rBZ-Cpf7SBuep1uQJZie3LokNf0skwbqTJ3FqhXEoyCl_5fkRBOA9z9n_FfejHa5Psy3LiUgEzVEQeYg5YAFa8RPq3Z7G"/>
+</div>
+<div class="p-md space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline-md text-[20px] mb-xs">Maya Sangma</h4>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="text-body-sm">Shillong, Meghalaya</span>
+</div>
+</div>
+<span class="bg-primary-container/10 text-primary px-sm py-xs rounded-lg text-label-sm">Food</span>
+</div>
+<div class="grid grid-cols-2 gap-md p-sm bg-surface-container-low rounded-lg">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Followers</p>
+<p class="text-headline-md text-[18px]">210K</p>
+</div>
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Eng. Rate</p>
+<p class="text-headline-md text-[18px] text-secondary">6.1%</p>
+</div>
+</div>
+<div class="flex gap-sm">
+<button class="flex-1 py-sm bg-white border border-outline-variant text-on-surface font-label-md rounded-lg hover:border-primary transition-colors">View Profile</button>
+<button class="flex-1 py-sm primary-gradient text-on-primary font-label-md rounded-lg shadow-md active:scale-95 transition-transform">Hire Now</button>
+</div>
+</div>
+</div>
+<!-- Creator Card 4 -->
+<div class="bg-white rounded-xl creator-card-shadow overflow-hidden group">
+<div class="relative h-64">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A portrait of a male tech reviewer from Manipur in a sleek, neon-lit studio setup. He is holding the latest high-tech smartphone, with blurred gaming monitors and RGB lighting in the background. The aesthetic is clean, sharp, and futuristic, reflecting the tech-savvy creator economy of the Northeast. Cool blue and purple lighting accents dominate the composition, creating a professional and modern look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBb9wjBN35mOEyaG88-olkp2rT89OKQBT2OtlhBR_IadzPLG-6PuZO5JfRmx_g-SG6kA0U-zC5QQ1AlaANm2Se0vvofap3zXEw9juMVkAAw_cFiQqrcZ4rNVBCY5VM00eUFJnhWj-4A4FjFTR8rtL8pc0ZKz6_3fVjwuvd9NPtQQnUoV6nm9ksgxP6mWt07t6cuOdV8AtzB4ZiHCJAcJvDMBoVC00sN5druM1bSoh5pW1uln0M5Hg5f"/>
+<div class="absolute top-sm right-sm bg-white/90 backdrop-blur-md px-sm py-xs rounded-full flex items-center gap-xs shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Verified</span>
+</div>
+</div>
+<div class="p-md space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline-md text-[20px] mb-xs">Rohan Meitei</h4>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="text-body-sm">Imphal, Manipur</span>
+</div>
+</div>
+<span class="bg-primary-container/10 text-primary px-sm py-xs rounded-lg text-label-sm">Tech</span>
+</div>
+<div class="grid grid-cols-2 gap-md p-sm bg-surface-container-low rounded-lg">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Followers</p>
+<p class="text-headline-md text-[18px]">45K</p>
+</div>
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Eng. Rate</p>
+<p class="text-headline-md text-[18px] text-secondary">8.4%</p>
+</div>
+</div>
+<div class="flex gap-sm">
+<button class="flex-1 py-sm bg-white border border-outline-variant text-on-surface font-label-md rounded-lg hover:border-primary transition-colors">View Profile</button>
+<button class="flex-1 py-sm primary-gradient text-on-primary font-label-md rounded-lg shadow-md active:scale-95 transition-transform">Hire Now</button>
+</div>
+</div>
+</div>
+<!-- Creator Card 5 -->
+<div class="bg-white rounded-xl creator-card-shadow overflow-hidden group">
+<div class="relative h-64">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A lifestyle creator from Sikkim, captured in a minimalist, light-filled cafe with large windows overlooking the Himalayas. She is dressed in soft neutral tones, reading a book with a coffee, embodying a serene and high-end lifestyle aesthetic. The image is bright, airy, and features a clean white palette with natural textures. It reflects a calm, professional, and aspirational content style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCr1Ii_ag_-zTx-MErB5xk0y_lKpET7IMNKOCzXJeKUOo2kKk5NOli8yyESYFDxepTALkMYAUSnmxiHTRSl_wDiyvFBAqRqxpsV_DbwIywvZXOmb7JnsQegwB_7Me6j8_GljWpCSF5e2vo0m3XR0wKdPQv6AyWmVMJmvM8LVdXx_Ae6AplqguK_Wr2tE0apsx7yV8KZvvLh_Gs7_bTMO1YjN6mZ8WLxwZkMkF6fFeY6UoPAJyqn-A0L"/>
+</div>
+<div class="p-md space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline-md text-[20px] mb-xs">Pema Bhutia</h4>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="text-body-sm">Gangtok, Sikkim</span>
+</div>
+</div>
+<span class="bg-primary-container/10 text-primary px-sm py-xs rounded-lg text-label-sm">Lifestyle</span>
+</div>
+<div class="grid grid-cols-2 gap-md p-sm bg-surface-container-low rounded-lg">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Followers</p>
+<p class="text-headline-md text-[18px]">125K</p>
+</div>
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Eng. Rate</p>
+<p class="text-headline-md text-[18px] text-secondary">3.9%</p>
+</div>
+</div>
+<div class="flex gap-sm">
+<button class="flex-1 py-sm bg-white border border-outline-variant text-on-surface font-label-md rounded-lg hover:border-primary transition-colors">View Profile</button>
+<button class="flex-1 py-sm primary-gradient text-on-primary font-label-md rounded-lg shadow-md active:scale-95 transition-transform">Hire Now</button>
+</div>
+</div>
+</div>
+<!-- Creator Card 6 -->
+<div class="bg-white rounded-xl creator-card-shadow overflow-hidden group">
+<div class="relative h-64">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A female traditional artisan and creator from Arunachal Pradesh, demonstrating weaving on a traditional loom. She is wearing vibrant local attire, and the focus is on her hands and the intricate patterns of the textile. The scene is warmly lit with natural evening light, creating a nostalgic yet professional craft-focused aesthetic. The background features authentic architectural elements of a traditional hill home." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6ceXla9sCQUT8P7fUwy98faVd0ddBtIN61ZTz3RdqNrKRKsqr5hD5HUdn8BHrzwEQenBYnLRW_-NCnp_Wkpvj9b0x6tv3rMROytmRg4FQb5w2NoXfKdcY77pjNbJjHq5hQVIdodP3SwHgpcvnj-CunOTz2vffv_mqTDXuCCTWnGv6wRMWFPdo7g13zMaCaTZTyG4jDyU2Nq1V-bYmmo48doopgFL7tRKseAVza1pcOBTwdu4X9SiJ"/>
+<div class="absolute top-sm right-sm bg-white/90 backdrop-blur-md px-sm py-xs rounded-full flex items-center gap-xs shadow-sm">
+<span class="material-symbols-outlined text-secondary text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Verified</span>
+</div>
+</div>
+<div class="p-md space-y-md">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-headline-md text-[20px] mb-xs">Tashi Mossang</h4>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span class="text-body-sm">Itanagar, Arunachal</span>
+</div>
+</div>
+<span class="bg-primary-container/10 text-primary px-sm py-xs rounded-lg text-label-sm">Artisan</span>
+</div>
+<div class="grid grid-cols-2 gap-md p-sm bg-surface-container-low rounded-lg">
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Followers</p>
+<p class="text-headline-md text-[18px]">28K</p>
+</div>
+<div>
+<p class="text-[10px] text-outline uppercase font-bold tracking-widest">Eng. Rate</p>
+<p class="text-headline-md text-[18px] text-secondary">12.2%</p>
+</div>
+</div>
+<div class="flex gap-sm">
+<button class="flex-1 py-sm bg-white border border-outline-variant text-on-surface font-label-md rounded-lg hover:border-primary transition-colors">View Profile</button>
+<button class="flex-1 py-sm primary-gradient text-on-primary font-label-md rounded-lg shadow-md active:scale-95 transition-transform">Hire Now</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="mt-xl flex justify-center items-center gap-sm">
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:border-primary text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 rounded-full bg-primary text-on-primary font-bold">1</button>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:border-primary text-outline hover:text-primary transition-colors">2</button>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:border-primary text-outline hover:text-primary transition-colors">3</button>
+<span class="text-outline">...</span>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:border-primary text-outline hover:text-primary transition-colors">12</button>
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:border-primary text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-on-surface dark:bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-lg px-md md:px-lg py-xl max-w-container-max mx-auto">
+<div class="space-y-md">
+<h2 class="font-headline-md text-headline-md text-surface-container-lowest dark:text-on-surface">CreatorNE</h2>
+<p class="text-surface-variant/80 font-body-sm">The bridge between global brands and Northeast India's unique creative energy.</p>
+<div class="flex gap-sm">
+<a class="text-surface-variant/80 hover:text-primary-fixed transition-colors" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="text-surface-variant/80 hover:text-primary-fixed transition-colors" href="#"><span class="material-symbols-outlined">camera_alt</span></a>
+<a class="text-surface-variant/80 hover:text-primary-fixed transition-colors" href="#"><span class="material-symbols-outlined">play_circle</span></a>
+</div>
+</div>
+<div class="space-y-md">
+<h3 class="font-label-md text-primary-fixed dark:text-primary uppercase tracking-widest">Platform</h3>
+<ul class="space-y-sm">
+<li><a class="text-surface-variant/80 hover:text-primary-fixed transition-colors font-body-sm" href="#">Browse Creators</a></li>
+<li><a class="text-surface-variant/80 hover:text-primary-fixed transition-colors font-body-sm" href="#">Brand Solutions</a></li>
+<li><a class="text-surface-variant/80 hover:text-primary-fixed transition-colors font-body-sm" href="#">Case Studies</a></li>
+</ul>
+</div>
+<div class="space-y-md">
+<h3 class="font-label-md text-primary-fixed dark:text-primary uppercase tracking-widest">Legal</h3>
+<ul class="space-y-sm">
+<li><a class="text-surface-variant/80 hover:text-primary-fixed transition-colors font-body-sm" href="#">Privacy Policy</a></li>
+<li><a class="text-surface-variant/80 hover:text-primary-fixed transition-colors font-body-sm" href="#">Terms of Service</a></li>
+<li><a class="text-surface-variant/80 hover:text-primary-fixed transition-colors font-body-sm" href="#">Contact Us</a></li>
+</ul>
+</div>
+<div class="space-y-md">
+<h3 class="font-label-md text-primary-fixed dark:text-primary uppercase tracking-widest">Newsletter</h3>
+<p class="text-surface-variant/80 font-body-sm">Get insights on the NE creator economy.</p>
+<form class="flex gap-xs">
+<input class="bg-surface-container/10 border border-outline-variant/30 rounded-lg px-sm py-xs text-white focus:ring-1 focus:ring-primary-fixed w-full" placeholder="Email address" type="email"/>
+<button class="bg-primary-fixed text-on-primary-fixed px-sm py-xs rounded-lg font-bold hover:bg-primary-fixed-dim transition-colors">Join</button>
+</form>
+</div>
+</div>
+<div class="py-md border-t border-outline-variant/10 text-center">
+<p class="text-surface-variant/60 font-body-sm">© 2024 CreatorNE. Empowering Northeast India's Creative Economy.</p>
+</div>
+</footer>
+<script>
+        // Micro-interactions and Search Filter Logic
+        document.querySelectorAll('input[type="range"]').forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const value = e.target.value;
+                // Here you would typically filter the cards
+                console.log(`Filtering by engagement: ${value}%`);
+            });
+        });
+
+        // Simple animation for the search bar on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('header');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-lg');
+            } else {
+                nav.classList.remove('shadow-lg');
+            }
+        });
+    </script>
+</body></html>
