@@ -3,12 +3,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import * as Icons from "lucide-react";
 import { APP_CONFIG, SOCIAL_LINKS } from "@/lib/constants";
 
 export function Footer() {
+  const pathname = usePathname();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<string | null>(null);
+
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/dashboard")) {
+    return null;
+  }
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();

@@ -2,8 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { LazyMotion, domAnimation } from "framer-motion";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { PageBackground } from "@/components/layout/PageBackground";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { FeaturesSection } from "@/components/sections/FeaturesSection";
@@ -35,7 +33,6 @@ export function HomePage() {
     <LazyMotion features={domAnimation}>
       <div className="relative min-h-screen bg-[#f9f9ff] text-[#151c27] font-sans antialiased overflow-x-hidden">
         <PageBackground />
-        <Navbar />
 
         <main className="relative z-10">
           <HeroSection />
@@ -50,8 +47,6 @@ export function HomePage() {
           <FaqSection />
           <AppCtaSection />
         </main>
-
-        <Footer />
       </div>
     </LazyMotion>
   );

@@ -4,7 +4,7 @@ import { directoryCategories } from "@/lib/directory-data";
 
 export function CategoriesPage() {
   return (
-    <main className="min-h-screen bg-background px-4 py-6 text-text-primary sm:px-6 lg:px-8 lg:py-8">
+    <main className="min-h-screen bg-background px-4 pt-28 pb-16 text-text-primary sm:px-6 lg:px-8 lg:pt-32">
       <div className="container-app">
         <div className="rounded-[38px] border border-white/80 bg-white/90 p-6 shadow-[0_24px_60px_rgba(15,23,42,0.12)] md:p-8">
           <Link href="/find-creators" className="inline-flex items-center gap-2 rounded-full border border-border-light bg-background px-4 py-2 text-sm font-medium text-text-secondary">
