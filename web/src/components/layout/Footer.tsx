@@ -6,9 +6,11 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import * as Icons from "lucide-react";
 import { APP_CONFIG, SOCIAL_LINKS } from "@/lib/constants";
+import { useCookieConsent } from "@/components/common/CookieConsentContext";
 
 export function Footer() {
   const pathname = usePathname();
+  const { openModal } = useCookieConsent();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<string | null>(null);
 
@@ -80,12 +82,21 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.26em] text-text-muted">Resources</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.26em] text-text-muted">Resources &amp; Legal</h3>
             <ul className="mt-4 space-y-3 text-sm text-text-secondary">
               <li><Link href="/faq" className="hover:text-primary-600">FAQ</Link></li>
-              <li><Link href="/creator-guide" className="hover:text-primary-600">Creator Guide</Link></li>
-              <li><Link href="/help" className="hover:text-primary-600">Help Center</Link></li>
               <li><Link href="/privacy-policy" className="hover:text-primary-600">Privacy Policy</Link></li>
+              <li><Link href="/cookie-policy" className="hover:text-primary-600">Cookie Policy</Link></li>
+              <li>
+                <button
+                  type="button"
+                  onClick={openModal}
+                  className="hover:text-primary-600 text-left cursor-pointer transition-colors"
+                >
+                  Cookie Preferences
+                </button>
+              </li>
+              <li><Link href="/terms" className="hover:text-primary-600">Terms of Service</Link></li>
             </ul>
           </div>
 

@@ -3,6 +3,9 @@ import { Inter } from "next/font/google";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { CookieConsentProvider } from "@/components/common/CookieConsentContext";
+import { CookieConsentBanner } from "@/components/common/CookieConsentBanner";
+import { CookiePreferencesModal } from "@/components/common/CookiePreferencesModal";
 import { APP_CONFIG } from "@/lib/constants";
 import "./globals.css";
 
@@ -136,9 +139,13 @@ export default function RootLayout({
           )}
       </head>
       <body className="font-sans antialiased text-[#151c27] bg-[#f9f9ff]">
-        <Navbar />
-        {children}
-        <Footer />
+        <CookieConsentProvider>
+          <Navbar />
+          {children}
+          <Footer />
+          <CookieConsentBanner />
+          <CookiePreferencesModal />
+        </CookieConsentProvider>
       </body>
     </html>
   );
