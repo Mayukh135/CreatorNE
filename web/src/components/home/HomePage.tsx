@@ -16,8 +16,9 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { APP_CONFIG, NAV_LINKS, SOCIAL_LINKS } from "@/lib/constants";
+import { useEffect, useRef, useState } from "react";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
 import {
   brandSteps,
   creatorSteps,
@@ -194,153 +195,6 @@ function ScrollProgressBar() {
       className="fixed left-0 top-0 z-[70] h-1 w-full origin-left bg-gradient-to-r from-primary-600 via-secondary to-accent-pink"
       style={{ scaleX }}
     />
-  );
-}
-
-function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 24);
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  return (
-    <>
-      <header
-        className={cn(
-          "fixed inset-x-0 top-0 z-50 border-b border-transparent transition-all duration-300",
-          isScrolled
-            ? "border-white/60 bg-white/75 shadow-[0_10px_30px_rgba(15,23,42,0.08)] backdrop-blur-xl"
-            : "bg-transparent",
-        )}
-      >
-        <div className="container-app flex items-center justify-between gap-4 py-4">
-          <Link href="/" className="flex items-center gap-3" aria-label="CreatorNE home">
-            <Image src="/logo.svg" alt="CreatorNE" width={44} height={44} className="h-11 w-11" />
-            <div className="hidden sm:block">
-              <p className="text-sm font-semibold tracking-[0.22em] text-text-muted uppercase">
-                CreatorNE
-              </p>
-              <p className="text-xs text-text-light">Discover. Collaborate. Grow.</p>
-            </div>
-          </Link>
-
-          <nav className="hidden items-center gap-7 lg:flex">
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="text-sm font-medium text-text-secondary transition hover:text-primary-600"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="hidden items-center gap-3 lg:flex">
-            <Link
-              href="/login"
-              className="rounded-full px-4 py-2 text-sm font-medium text-text-secondary transition hover:text-primary-600"
-              data-cursor-expand="true"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/register"
-              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary-600 to-secondary px-5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_30px_rgba(124,58,237,0.22)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(124,58,237,0.28)]"
-              data-cursor-expand="true"
-            >
-              Join as Creator
-              <Icons.ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setIsOpen(true)}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-white/90 text-text-primary shadow-sm transition hover:border-primary-200 hover:text-primary-600 lg:hidden"
-            aria-label="Open navigation menu"
-            data-cursor-expand="true"
-          >
-            <Icons.Menu className="h-5 w-5" />
-          </button>
-        </div>
-      </header>
-
-      <AnimatePresence>
-        {isOpen ? (
-          <m.aside
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] lg:hidden"
-          >
-            <button
-              type="button"
-              className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm"
-              onClick={() => setIsOpen(false)}
-              aria-label="Close navigation menu"
-            />
-            <m.div
-              initial={{ x: 320 }}
-              animate={{ x: 0 }}
-              exit={{ x: 320 }}
-              transition={{ type: "spring", stiffness: 260, damping: 28 }}
-              className="absolute right-0 top-0 h-full w-[88vw] max-w-sm border-l border-white/60 bg-white/96 p-6 shadow-[0_30px_80px_rgba(15,23,42,0.24)]"
-            >
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-semibold uppercase tracking-[0.22em] text-text-muted">
-                  Menu
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setIsOpen(false)}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-text-primary"
-                >
-                  <Icons.X className="h-4 w-4" />
-                </button>
-              </div>
-              <nav className="mt-8 space-y-2">
-                {NAV_LINKS.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    className="flex items-center justify-between rounded-2xl border border-border-light bg-background px-4 py-4 text-base font-medium text-text-primary"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {link.label}
-                    <Icons.MoveRight className="h-4 w-4 text-primary-600" />
-                  </Link>
-                ))}
-              </nav>
-              <div className="mt-8 grid gap-3">
-                <Link
-                  href="/login"
-                  onClick={() => setIsOpen(false)}
-                  className="rounded-full border border-border bg-white px-4 py-3 text-center font-medium text-text-primary"
-                >
-                  Log in
-                </Link>
-                <Link
-                  href="/register"
-                  onClick={() => setIsOpen(false)}
-                  className="rounded-full bg-gradient-to-r from-primary-600 to-secondary px-4 py-3 text-center font-semibold text-white"
-                >
-                  Join as Creator
-                </Link>
-              </div>
-            </m.div>
-          </m.aside>
-        ) : null}
-      </AnimatePresence>
-    </>
   );
 }
 
@@ -1191,7 +1045,7 @@ function AppCtaSection() {
                   ].map((item, index) => (
                     <div key={item.title} className="rounded-3xl border border-border-light bg-white p-4 shadow-sm">
                       <div className="flex items-center gap-3">
-                        <div className={cn("flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br text-white", index === 0 ? "from-primary-600 to-secondary" : index === 1 ? "from-accent-pink to-primary-600" : "from-success to-secondary") }>
+                        <div className={cn("flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br text-white", index === 0 ? "from-primary-600 to-secondary" : index === 1 ? "from-accent-pink to-primary-600" : "from-success to-secondary")}>
                           <Icons.Smartphone className="h-4 w-4" />
                         </div>
                         <div>
@@ -1211,139 +1065,6 @@ function AppCtaSection() {
   );
 }
 
-function Footer() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<string | null>(null);
-
-  const socialMap = useMemo(
-    () => ({
-      Instagram: Icons.Instagram,
-      YouTube: Icons.Youtube,
-      Twitter: Icons.Twitter,
-      Telegram: Icons.Send,
-      LinkedIn: Icons.Linkedin,
-    }),
-    [],
-  );
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setStatus(null);
-
-    const response = await fetch("/api/newsletter", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-
-    const payload = (await response.json().catch(() => null)) as { message?: string; error?: string } | null;
-
-    if (!response.ok) {
-      setStatus(payload?.error ?? "Something went wrong.");
-      return;
-    }
-
-    setEmail("");
-    setStatus(payload?.message ?? "Subscribed.");
-  };
-
-  return (
-    <footer className="border-t border-white/80 bg-white/70 backdrop-blur-md">
-      <div className="container-app py-16">
-        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.85fr_0.85fr_0.85fr_1.05fr]">
-          <div>
-            <Link href="/" className="inline-flex items-center gap-3">
-              <Image src="/logo.svg" alt="CreatorNE" width={44} height={44} className="h-11 w-11" />
-              <span className="text-lg font-semibold text-text-primary">CreatorNE</span>
-            </Link>
-            <p className="mt-4 max-w-sm text-sm leading-7 text-text-muted">
-              A premium creator discovery platform built for Northeast India, with a long-term path toward a shared API and mobile-first product ecosystem.
-            </p>
-            <div className="mt-5 flex items-center gap-3">
-              {SOCIAL_LINKS.map((social) => {
-                const SocialIcon = socialMap[social.icon as keyof typeof socialMap];
-
-                if (!SocialIcon) {
-                  return null;
-                }
-
-                return (
-                  <a
-                    key={social.name}
-                    href={social.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-text-secondary transition hover:-translate-y-0.5 hover:border-primary-200 hover:text-primary-600"
-                    aria-label={social.name}
-                    data-cursor-expand="true"
-                  >
-                    <SocialIcon className="h-4 w-4" />
-                  </a>
-                );
-              })}
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.26em] text-text-muted">Platform</h3>
-            <ul className="mt-4 space-y-3 text-sm text-text-secondary">
-              <li><Link href="/find-creators" className="hover:text-primary-600">Creators</Link></li>
-              <li><Link href="/categories" className="hover:text-primary-600">Categories</Link></li>
-              <li><Link href="/#how-it-works" className="hover:text-primary-600">How It Works</Link></li>
-              <li><Link href="/register?type=brand" className="hover:text-primary-600">For Brands</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.26em] text-text-muted">Company</h3>
-            <ul className="mt-4 space-y-3 text-sm text-text-secondary">
-              <li><Link href="/about" className="hover:text-primary-600">About Us</Link></li>
-              <li><Link href="/blog" className="hover:text-primary-600">Blog</Link></li>
-              <li><Link href="/contact" className="hover:text-primary-600">Contact</Link></li>
-              <li><Link href="/terms" className="hover:text-primary-600">Terms &amp; Conditions</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.26em] text-text-muted">Resources</h3>
-            <ul className="mt-4 space-y-3 text-sm text-text-secondary">
-              <li><Link href="/faq" className="hover:text-primary-600">FAQ</Link></li>
-              <li><Link href="/creator-guide" className="hover:text-primary-600">Creator Guide</Link></li>
-              <li><Link href="/help" className="hover:text-primary-600">Help Center</Link></li>
-              <li><Link href="/privacy" className="hover:text-primary-600">Privacy Policy</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.26em] text-text-muted">Newsletter</h3>
-            <form className="mt-4 space-y-3" onSubmit={handleSubmit}>
-              <input
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                placeholder="Enter your email"
-                className="h-12 w-full rounded-full border border-border bg-white px-4 text-sm text-text-primary outline-none transition placeholder:text-text-light focus:border-primary-300 focus:ring-4 focus:ring-primary-100"
-              />
-              <button
-                type="submit"
-                className="inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-to-r from-primary-600 to-secondary px-5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5"
-                data-cursor-expand="true"
-              >
-                Subscribe
-              </button>
-            </form>
-            {status ? <p className="mt-3 text-sm text-text-muted">{status}</p> : null}
-          </div>
-        </div>
-
-        <div className="mt-12 flex flex-col gap-4 border-t border-border-light pt-6 text-sm text-text-muted md:flex-row md:items-center md:justify-between">
-          <p>Made with care in Northeast India.</p>
-          <p>© {new Date().getFullYear()} {APP_CONFIG.name}. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 function ScrollToTopButton() {
   const [visible, setVisible] = useState(false);
