@@ -18,8 +18,12 @@
 # production
 /build
 
-# misc
+# generated assets / sitemaps
+/public/sitemap*.xml
+
+# misc / macOS
 .DS_Store
+.DS_Store?
 *.pem
 
 # debug
@@ -42,7 +46,3 @@ next-env.d.ts
 
 # prisma
 /prisma/*.db
-
-
-
-.DS_Store
