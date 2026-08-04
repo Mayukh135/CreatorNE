@@ -1,810 +1,1405 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useMemo } from "react";
+import Image from "next/image";
 import * as Icons from "lucide-react";
-import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion";
+import type { LucideIcon } from "lucide-react";
+import {
+  AnimatePresence,
+  LazyMotion,
+  domAnimation,
+  m,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { APP_CONFIG, NAV_LINKS, SOCIAL_LINKS } from "@/lib/constants";
+import {
+  brandSteps,
+  creatorSteps,
+  featuredBrands,
+  featuredCreators,
+  homeCategories,
+  homeFaqs,
+  homeFeatures,
+  homeStats,
+  homeTestimonials,
+} from "@/lib/home-data";
+import { cn, formatNumber } from "@/lib/utils";
 
-interface CreatorCardData {
-  id: string;
-  name: string;
-  slug: string;
-  state: string;
-  city: string;
-  category: string;
-  followers: number;
-  followerText: string;
-  engagementRate: number;
-  image: string;
-  isVerified: boolean;
-  platforms: ("instagram" | "youtube" | "tiktok")[];
-  priceEstimate: number;
-  bio: string;
+type MotionIconName = keyof typeof Icons;
+
+function resolveIcon(name: string) {
+  return Icons[name as MotionIconName] as LucideIcon | undefined;
 }
 
-const DIRECTORY_CREATORS: CreatorCardData[] = [
-  {
-    id: "sentila-longkumer",
-    name: "Sentila Longkumer",
-    slug: "sentila-jamir",
-    state: "Nagaland",
-    city: "Kohima",
-    category: "Fashion",
-    followers: 142000,
-    followerText: "142K",
-    engagementRate: 5.2,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuASh9lo088pweH6vRpWdRUu0RmBbXkc-elLZ9__rAbipXpx5e00X24M0mrNUJE9Mc0w2kefinf5sEZg__-7eWy8CV4XV7dxRUxehBmwjIF0nCp0OvuutfxK6VUAV-igIGFBbYuvst3ozUm4T79noJdtOeBJVTEwkotzL-8rh_bQEC-l05OnhCKiJnzdxnGkHsl88TDyTvDL7Obac7Lt5tt7pvUTVR0EZjGLGHHHCVbvJh8mHNx80ahn",
-    isVerified: true,
-    platforms: ["instagram", "youtube"],
-    priceEstimate: 15000,
-    bio: "Contemporary Nagaland fashion, ethnic beadwork styling, and modern Northeast lifestyle visual stories.",
-  },
-  {
-    id: "bikram-das",
-    name: "Bikram Das",
-    slug: "rahul-boruah",
-    state: "Assam",
-    city: "Guwahati",
-    category: "Travel",
-    followers: 89000,
-    followerText: "89K",
-    engagementRate: 4.8,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDzBIXjqYgzT49EdDbW-8kOdEVYf0cI8LMOXaUo6yEvi9Bd-fB6Ygl9E4vd6V_icjK5r9TIYf0UCKK60ou_gF0ZBlPOgFqqSqNJUvjFIsAoDkllD7iym_gqKYM0ax42TUTO2-ujXH35ow3BSL52XqKV7Ybr6jbLfvkMWyFX4br42oaDEH-n3bDmLbSoLaVszOCYIaeB4CEBSyhrlIS5JRmjTBXuoY-3PzoKv5jJ472ctyAMu9wCpe-3",
-    isVerified: true,
-    platforms: ["instagram", "youtube"],
-    priceEstimate: 12000,
-    bio: "Adventure cycling, jungle expeditions in Assam, and nature exploration across Northeast India.",
-  },
-  {
-    id: "maya-sangma",
-    name: "Maya Sangma",
-    slug: "nisha-devi",
-    state: "Meghalaya",
-    city: "Shillong",
-    category: "Food",
-    followers: 210000,
-    followerText: "210K",
-    engagementRate: 6.1,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuC6WdXWPd3W9MzcSWLHL67NsL03E54HGdjOVCFjzLvyU7FEEMCXRy_SKvQZbF91hiHZnlM4mHrGCXYyS0rIEhURfFkgPqF7xkvYRiEZLUwOccvoRRc04TQ15Uo665mL-a9ur6wOq071hQAc1nc4My4OFO4rBZ-Cpf7SBuep1uQJZie3LokNf0skwbqTJ3FqhXEoyCl_5fkRBOA9z9n_FfejHa5Psy3LiUgEzVEQeYg5YAFa8RPq3Z7G",
-    isVerified: true,
-    platforms: ["instagram", "tiktok"],
-    priceEstimate: 22000,
-    bio: "Traditional Khasi culinary recipes, food styling, and vibrant cooking culture from Shillong.",
-  },
-  {
-    id: "rohan-meitei",
-    name: "Rohan Meitei",
-    slug: "arun-roy",
-    state: "Manipur",
-    city: "Imphal",
-    category: "Tech",
-    followers: 45000,
-    followerText: "45K",
-    engagementRate: 8.4,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBb9wjBN35mOEyaG88-olkp2rT89OKQBT2OtlhBR_IadzPLG-6PuZO5JfRmx_g-SG6kA0U-zC5QQ1AlaANm2Se0vvofap3zXEw9juMVkAAw_cFiQqrcZ4rNVBCY5VM00eUFJnhWj-4A4FjFTR8rtL8pc0ZKz6_3fVjwuvd9NPtQQnUoV6nm9ksgxP6mWt07t6cuOdV8AtzB4ZiHCJAcJvDMBoVC00sN5druM1bSoh5pW1uln0M5Hg5f",
-    isVerified: true,
-    platforms: ["youtube", "instagram"],
-    priceEstimate: 9500,
-    bio: "Crisp gadget reviews, gaming desk setups, and technology explainers for Northeast youth.",
-  },
-  {
-    id: "pema-bhutia",
-    name: "Pema Bhutia",
-    slug: "pema-bhutia",
-    state: "Sikkim",
-    city: "Gangtok",
-    category: "Lifestyle",
-    followers: 125000,
-    followerText: "125K",
-    engagementRate: 3.9,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuCr1Ii_ag_-zTx-MErB5xk0y_lKpET7IMNKOCzXJeKUOo2kKk5NOli8yyESYFDxepTALkMYAUSnmxiHTRSl_wDiyvFBAqRqxpsV_DbwIywvZXOmb7JnsQegwB_7Me6j8_GljWpCSF5e2vo0m3XR0wKdPQv6AyWmVMJmvM8LVdXx_Ae6AplqguK_Wr2tE0apsx7yV8KZvvLh_Gs7_bTMO1YjN6mZ8WLxwZkMkF6fFeY6UoPAJyqn-A0L",
-    isVerified: false,
-    platforms: ["instagram"],
-    priceEstimate: 14000,
-    bio: "Aspirational Himalayan lifestyle aesthetic, Himalayan cafes, books, and serene aesthetic vlogs.",
-  },
-  {
-    id: "tashi-mossang",
-    name: "Tashi Mossang",
-    slug: "tashi-mossang",
-    state: "Arunachal Pradesh",
-    city: "Itanagar",
-    category: "Artisan",
-    followers: 28000,
-    followerText: "28K",
-    engagementRate: 12.2,
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuC6ceXla9sCQUT8P7fUwy98faVd0ddBtIN61ZTz3RdqNrKRKsqr5hD5HUdn8BHrzwEQenBYnLRW_-NCnp_Wkpvj9b0x6tv3rMROytmRg4FQb5w2NoXfKdcY77pjNbJjHq5hQVIdodP3SwHgpcvnj-CunOTz2vffv_mqTDXuCCTWnGv6wRMWFPdo7g13zMaCaTZTyG4jDyU2Nq1V-bYmmo48doopgFL7tRKseAVza1pcOBTwdu4X9SiJ",
-    isVerified: true,
-    platforms: ["instagram", "youtube"],
-    priceEstimate: 7000,
-    bio: "Indigenous textile weaving, handicraft documentation, and artisan heritage storytelling.",
-  },
-];
+function Icon({ name, className }: { name: string; className?: string }) {
+  const ResolvedIcon = resolveIcon(name);
 
-const CATEGORIES = [
-  "All Categories",
-  "Travel & Adventure",
-  "Traditional Food",
-  "Modern Fashion",
-  "Tech & Gadgets",
-  "Lifestyle",
-  "Artisan",
-];
+  if (!ResolvedIcon) {
+    return null;
+  }
 
-const LOCATIONS = [
-  "All Locations",
-  "Nagaland",
-  "Assam",
-  "Manipur",
-  "Meghalaya",
-  "Sikkim",
-  "Arunachal Pradesh",
-  "Tripura",
-  "Mizoram",
-];
+  return <ResolvedIcon className={className} aria-hidden="true" />;
+}
 
-export function HomePage() {
-  // Search & Filter state
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All Categories");
-  const [selectedLocation, setSelectedLocation] = useState("All Locations");
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
-  const [minEngagement, setMinEngagement] = useState(1);
-  const [verifiedOnly, setVerifiedOnly] = useState(false);
-  const [sortBy, setSortBy] = useState("relevance");
-
-  // Hire Modal State
-  const [hiringCreator, setHiringCreator] = useState<CreatorCardData | null>(null);
-
-  // Platform Toggle handler
-  const togglePlatform = (platform: string) => {
-    setSelectedPlatforms((prev) =>
-      prev.includes(platform) ? prev.filter((p) => p !== platform) : [...prev, platform]
-    );
-  };
-
-  // Filtered Creators calculation
-  const filteredCreators = useMemo(() => {
-    return DIRECTORY_CREATORS.filter((creator) => {
-      // Search query filter
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const matchesName = creator.name.toLowerCase().includes(q);
-        const matchesCategory = creator.category.toLowerCase().includes(q);
-        const matchesState = creator.state.toLowerCase().includes(q);
-        const matchesCity = creator.city.toLowerCase().includes(q);
-        if (!matchesName && !matchesCategory && !matchesState && !matchesCity) {
-          return false;
-        }
-      }
-
-      // Category filter
-      if (selectedCategory !== "All Categories") {
-        const catMap: Record<string, string> = {
-          "Travel & Adventure": "Travel",
-          "Traditional Food": "Food",
-          "Modern Fashion": "Fashion",
-          "Tech & Gadgets": "Tech",
-          Lifestyle: "Lifestyle",
-          Artisan: "Artisan",
-        };
-        const target = catMap[selectedCategory] || selectedCategory;
-        if (creator.category.toLowerCase() !== target.toLowerCase()) {
-          return false;
-        }
-      }
-
-      // Location filter
-      if (selectedLocation !== "All Locations") {
-        if (creator.state.toLowerCase() !== selectedLocation.toLowerCase()) {
-          return false;
-        }
-      }
-
-      // Verified filter
-      if (verifiedOnly && !creator.isVerified) {
-        return false;
-      }
-
-      // Engagement filter
-      if (creator.engagementRate < minEngagement) {
-        return false;
-      }
-
-      // Platforms filter
-      if (selectedPlatforms.length > 0) {
-        const hasPlatform = selectedPlatforms.some((p) =>
-          creator.platforms.includes(p as "instagram" | "youtube" | "tiktok")
-        );
-        if (!hasPlatform) {
-          return false;
-        }
-      }
-
-      return true;
-    }).sort((a, b) => {
-      if (sortBy === "followers") {
-        return b.followers - a.followers;
-      }
-      if (sortBy === "engagement") {
-        return b.engagementRate - a.engagementRate;
-      }
-      return 0; // relevance
-    });
-  }, [searchQuery, selectedCategory, selectedLocation, verifiedOnly, minEngagement, selectedPlatforms, sortBy]);
+function AnimatedSectionHeading({
+  eyebrow,
+  title,
+  accent,
+  description,
+}: {
+  eyebrow: string;
+  title: React.ReactNode;
+  accent: "green" | "pink" | "purple";
+  description?: string;
+}) {
+  const accentAsset =
+    accent === "green"
+      ? "/illustrations/hero-squiggle.svg"
+      : accent === "pink"
+        ? "/illustrations/section-squiggle.svg"
+        : "/illustrations/section-squiggle.svg";
 
   return (
-    <LazyMotion features={domAnimation}>
-      <div className="min-h-screen bg-[#f9f9ff] text-[#151c27] font-sans antialiased">
-        {/* Header / Navbar */}
-        <header className="fixed top-0 left-0 right-0 z-50 h-20 bg-[#f9f9ff]/80 backdrop-blur-xl border-b border-[#ccc3d8]/30 shadow-sm transition-all">
-          <nav className="max-w-7xl mx-auto px-4 md:px-8 h-full flex items-center justify-between">
-            <div className="flex items-center gap-8 md:gap-12">
-              <Link href="/" className="group flex items-center gap-2">
-                <span className="text-2xl md:text-3xl font-black tracking-tight bg-gradient-to-r from-[#630ed4] via-[#7C3AED] to-[#4b41e1] bg-clip-text text-transparent">
-                  CreatorNE
-                </span>
-              </Link>
+    <div className="max-w-3xl">
+      <p className="text-sm font-semibold uppercase tracking-[0.32em] text-primary-600">
+        {eyebrow}
+      </p>
+      <div className="mt-3 relative inline-flex max-w-full">
+        <h2 className="text-balance text-3xl font-semibold tracking-tight text-text-primary md:text-4xl">
+          {title}
+        </h2>
+        <Image
+          src={accentAsset}
+          alt=""
+          aria-hidden="true"
+          width={320}
+          height={64}
+          className="pointer-events-none absolute -bottom-4 left-0 h-6 w-44 opacity-90 md:-bottom-5 md:h-8 md:w-56"
+        />
+      </div>
+      {description ? (
+        <p className="mt-4 max-w-2xl text-base leading-7 text-text-muted md:text-lg">
+          {description}
+        </p>
+      ) : null}
+    </div>
+  );
+}
 
-              <div className="hidden md:flex items-center gap-6">
-                <Link
-                  href="/"
-                  className="text-sm font-bold text-[#630ed4] border-b-2 border-[#630ed4] pb-0.5 transition-colors"
+function CountUpStat({ value, suffix }: { value: number; suffix: string }) {
+  const ref = useRef<HTMLSpanElement | null>(null);
+  const inView = useInView(ref, { once: true, margin: "-20% 0px" });
+  const prefersReducedMotion = useReducedMotion();
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!inView || prefersReducedMotion) {
+      setCount(value);
+      return;
+    }
+
+    let frame = 0;
+    const duration = 1100;
+    const start = performance.now();
+
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setCount(Math.round(value * eased));
+
+      if (progress < 1) {
+        frame = window.requestAnimationFrame(tick);
+      }
+    };
+
+    frame = window.requestAnimationFrame(tick);
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [inView, prefersReducedMotion, value]);
+
+  return (
+    <span ref={ref}>
+      {formatNumber(count)}{suffix}
+    </span>
+  );
+}
+
+function CursorFollower() {
+  const prefersReducedMotion = useReducedMotion();
+  const [isReady, setIsReady] = useState(false);
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
+  const x = useSpring(mouseX, { stiffness: 520, damping: 34 });
+  const y = useSpring(mouseY, { stiffness: 520, damping: 34 });
+  const scale = useSpring(1, { stiffness: 380, damping: 28 });
+
+  useEffect(() => {
+    if (prefersReducedMotion || !window.matchMedia("(pointer: fine)").matches) {
+      return;
+    }
+
+    setIsReady(true);
+
+    const handleMove = (event: PointerEvent) => {
+      mouseX.set(event.clientX);
+      mouseY.set(event.clientY);
+
+      const target = event.target as HTMLElement | null;
+      const interactive = target?.closest("a,button,input,textarea,select,[data-cursor-expand='true']");
+      scale.set(interactive ? 5 : 1);
+    };
+
+    const handleLeave = () => scale.set(0.1);
+    const handleEnter = () => scale.set(1);
+
+    window.addEventListener("pointermove", handleMove);
+    window.addEventListener("pointerleave", handleLeave);
+    window.addEventListener("pointerenter", handleEnter);
+
+    return () => {
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerleave", handleLeave);
+      window.removeEventListener("pointerenter", handleEnter);
+    };
+  }, [mouseX, mouseY, prefersReducedMotion, scale]);
+
+  if (!isReady) {
+    return null;
+  }
+
+  return (
+    <m.div
+      className="pointer-events-none fixed left-0 top-0 z-[80] hidden h-2.5 w-2.5 rounded-full bg-white mix-blend-difference md:block"
+      style={{ x, y, scale, translateX: "-50%", translateY: "-50%" }}
+    />
+  );
+}
+
+function ScrollProgressBar() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 140,
+    damping: 28,
+    restDelta: 0.001,
+  });
+
+  return (
+    <m.div
+      className="fixed left-0 top-0 z-[70] h-1 w-full origin-left bg-gradient-to-r from-primary-600 via-secondary to-accent-pink"
+      style={{ scaleX }}
+    />
+  );
+}
+
+function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 24);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <>
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 border-b border-transparent transition-all duration-300",
+          isScrolled
+            ? "border-white/60 bg-white/75 shadow-[0_10px_30px_rgba(15,23,42,0.08)] backdrop-blur-xl"
+            : "bg-transparent",
+        )}
+      >
+        <div className="container-app flex items-center justify-between gap-4 py-4">
+          <Link href="/" className="flex items-center gap-3" aria-label="CreatorNE home">
+            <Image src="/logo.svg" alt="CreatorNE" width={44} height={44} className="h-11 w-11" />
+            <div className="hidden sm:block">
+              <p className="text-sm font-semibold tracking-[0.22em] text-text-muted uppercase">
+                CreatorNE
+              </p>
+              <p className="text-xs text-text-light">Discover. Collaborate. Grow.</p>
+            </div>
+          </Link>
+
+          <nav className="hidden items-center gap-7 lg:flex">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="text-sm font-medium text-text-secondary transition hover:text-primary-600"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="hidden items-center gap-3 lg:flex">
+            <Link
+              href="/login"
+              className="rounded-full px-4 py-2 text-sm font-medium text-text-secondary transition hover:text-primary-600"
+              data-cursor-expand="true"
+            >
+              Log in
+            </Link>
+            <Link
+              href="/register"
+              className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary-600 to-secondary px-5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_30px_rgba(124,58,237,0.22)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_40px_rgba(124,58,237,0.28)]"
+              data-cursor-expand="true"
+            >
+              Join as Creator
+              <Icons.ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsOpen(true)}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-white/90 text-text-primary shadow-sm transition hover:border-primary-200 hover:text-primary-600 lg:hidden"
+            aria-label="Open navigation menu"
+            data-cursor-expand="true"
+          >
+            <Icons.Menu className="h-5 w-5" />
+          </button>
+        </div>
+      </header>
+
+      <AnimatePresence>
+        {isOpen ? (
+          <m.aside
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] lg:hidden"
+          >
+            <button
+              type="button"
+              className="absolute inset-0 bg-slate-950/50 backdrop-blur-sm"
+              onClick={() => setIsOpen(false)}
+              aria-label="Close navigation menu"
+            />
+            <m.div
+              initial={{ x: 320 }}
+              animate={{ x: 0 }}
+              exit={{ x: 320 }}
+              transition={{ type: "spring", stiffness: 260, damping: 28 }}
+              className="absolute right-0 top-0 h-full w-[88vw] max-w-sm border-l border-white/60 bg-white/96 p-6 shadow-[0_30px_80px_rgba(15,23,42,0.24)]"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold uppercase tracking-[0.22em] text-text-muted">
+                  Menu
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-text-primary"
                 >
-                  Directory
+                  <Icons.X className="h-4 w-4" />
+                </button>
+              </div>
+              <nav className="mt-8 space-y-2">
+                {NAV_LINKS.map((link) => (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    className="flex items-center justify-between rounded-2xl border border-border-light bg-background px-4 py-4 text-base font-medium text-text-primary"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {link.label}
+                    <Icons.MoveRight className="h-4 w-4 text-primary-600" />
+                  </Link>
+                ))}
+              </nav>
+              <div className="mt-8 grid gap-3">
+                <Link
+                  href="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-full border border-border bg-white px-4 py-3 text-center font-medium text-text-primary"
+                >
+                  Log in
                 </Link>
+                <Link
+                  href="/register"
+                  onClick={() => setIsOpen(false)}
+                  className="rounded-full bg-gradient-to-r from-primary-600 to-secondary px-4 py-3 text-center font-semibold text-white"
+                >
+                  Join as Creator
+                </Link>
+              </div>
+            </m.div>
+          </m.aside>
+        ) : null}
+      </AnimatePresence>
+    </>
+  );
+}
+
+function HeroSection({ scrollY }: { scrollY: ReturnType<typeof useScroll>["scrollY"] }) {
+  const prefersReducedMotion = useReducedMotion();
+  const mapY = useTransform(scrollY, [0, 700], [0, prefersReducedMotion ? 0 : -110]);
+  const doodleY = useTransform(scrollY, [0, 700], [0, prefersReducedMotion ? 0 : -150]);
+
+  return (
+    <section className="relative overflow-hidden pt-28 lg:pt-32">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(124,58,237,0.16),_transparent_36%),radial-gradient(circle_at_top_right,_rgba(6,182,212,0.12),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(233,30,140,0.08),_transparent_28%)]" />
+      <div className="absolute inset-x-0 top-0 -z-10 h-[520px] bg-[linear-gradient(180deg,rgba(248,250,252,0.92)_0%,rgba(248,250,252,0.66)_48%,rgba(248,250,252,0)_100%)]" />
+      <div className="container-app pb-10 lg:pb-16">
+        <div className="grid items-center gap-12 lg:grid-cols-[1.02fr_0.98fr] lg:gap-10">
+          <div className="relative z-10 max-w-2xl">
+            <m.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15, duration: 0.6, ease: "easeOut" }}
+              className="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-700 shadow-sm"
+            >
+              <Icons.Sparkles className="h-4 w-4 text-gold" />
+              The Creator Economy of Northeast India
+            </m.div>
+
+            <div className="mt-6 space-y-2 text-5xl font-semibold tracking-tight text-text-primary md:text-6xl lg:text-7xl">
+              <m.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.28, duration: 0.6 }}>
+                Discover.
+              </m.div>
+              <m.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.38, duration: 0.6 }}>
+                Collaborate.
+              </m.div>
+              <m.div
+                initial={{ opacity: 0, y: 28 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.48, duration: 0.6 }}
+                className="relative inline-block text-gradient-animated"
+              >
+                Grow Together.
+                <Image
+                  src="/illustrations/hero-squiggle.svg"
+                  alt=""
+                  aria-hidden="true"
+                  width={280}
+                  height={70}
+                  className="pointer-events-none absolute -bottom-6 left-0 h-7 w-64 md:-bottom-7 md:h-8 md:w-72"
+                />
+              </m.div>
+            </div>
+
+            <m.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.62, duration: 0.55 }}
+              className="mt-8 max-w-xl text-lg leading-8 text-text-secondary md:text-xl"
+            >
+              CreatorNE is the premium discovery and collaboration platform built for verified Northeast creators and the brands that want to work with them.
+            </m.p>
+
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <m.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.74, duration: 0.45 }}>
+                <Link
+                  href="/register"
+                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-primary-600 to-secondary px-6 py-3.5 text-base font-semibold text-white shadow-[0_18px_35px_rgba(124,58,237,0.24)] transition hover:-translate-y-0.5 hover:shadow-[0_24px_45px_rgba(124,58,237,0.3)]"
+                  data-cursor-expand="true"
+                >
+                  Join as Creator
+                  <Icons.ArrowRight className="h-4 w-4" />
+                </Link>
+              </m.div>
+              <m.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.82, duration: 0.45 }}>
                 <Link
                   href="/find-creators"
-                  className="text-sm font-medium text-[#4a4455] hover:text-[#630ed4] transition-colors"
+                  className="inline-flex items-center gap-2 rounded-full border border-border bg-white px-6 py-3.5 text-base font-semibold text-text-primary shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:text-primary-600"
+                  data-cursor-expand="true"
                 >
-                  Marketplace
+                  Hire Creators
+                  <Icons.MoveRight className="h-4 w-4" />
                 </Link>
-                <Link
-                  href="/blog"
-                  className="text-sm font-medium text-[#4a4455] hover:text-[#630ed4] transition-colors"
+              </m.div>
+            </div>
+
+            <m.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.95, duration: 0.55 }}
+              className="mt-8 flex flex-wrap items-center gap-4 rounded-3xl border border-white/70 bg-white/80 p-4 shadow-card backdrop-blur-md"
+            >
+              <div className="flex -space-x-2">
+                {[
+                  "SJ",
+                  "RB",
+                  "ND",
+                  "AR",
+                ].map((item) => (
+                  <div key={item} className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white bg-gradient-to-br from-primary-600 to-secondary text-xs font-semibold text-white shadow-sm">
+                    {item}
+                  </div>
+                ))}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-text-primary">500+ creators already in motion</p>
+                <p className="text-sm text-text-muted">Trusted by Northeast storytellers and emerging brands.</p>
+              </div>
+            </m.div>
+
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              {homeStats.map((stat, index) => (
+                <m.div
+                  key={stat.key}
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.05 + index * 0.08, duration: 0.45 }}
+                  className="squircle border border-white/70 bg-white/85 p-4 shadow-card backdrop-blur-md"
                 >
-                  Case Studies
-                </Link>
-                <Link
-                  href="/about"
-                  className="text-sm font-medium text-[#4a4455] hover:text-[#630ed4] transition-colors"
+                  <div className="text-2xl font-semibold text-text-primary">
+                    <CountUpStat value={stat.value} suffix={stat.suffix} />
+                  </div>
+                  <p className="mt-1 text-sm text-text-muted">{stat.label}</p>
+                </m.div>
+              ))}
+            </div>
+          </div>
+
+          <div className="relative mx-auto w-full max-w-[640px] lg:max-w-none">
+            <m.div
+              style={{ y: mapY }}
+              initial={{ opacity: 0, scale: 0.96 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.95, duration: 0.7 }}
+              className="relative overflow-hidden rounded-[34px] border border-white/80 bg-white/90 p-5 shadow-[0_30px_70px_rgba(15,23,42,0.18)]"
+            >
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(124,58,237,0.18),_transparent_32%),radial-gradient(circle_at_bottom_right,_rgba(6,182,212,0.14),_transparent_28%)]" />
+              <div className="relative rounded-[28px] border border-white/70 bg-background p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-[0.22em] text-primary-600">Northeast Reach</p>
+                    <h3 className="mt-2 text-2xl font-semibold text-text-primary">Creators mapped by state, niche, and culture</h3>
+                  </div>
+                  <div className="hidden rounded-full border border-success/20 bg-success/10 px-3 py-1 text-sm font-medium text-success md:inline-flex">
+                    Live discovery
+                  </div>
+                </div>
+
+                <div className="relative mt-6 overflow-hidden rounded-[28px] border border-border-light bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(248,250,252,0.9))] p-4">
+                  <Image
+                    src="/illustrations/hero-sparkles.svg"
+                    alt=""
+                    aria-hidden="true"
+                    width={120}
+                    height={120}
+                    className="absolute right-4 top-4 h-20 w-20 opacity-50"
+                  />
+                  <m.div style={{ y: prefersReducedMotion ? 0 : mapY }}>
+                    <Image
+                      src="/illustrations/ne-map.svg"
+                      alt="Northeast India map illustration"
+                      width={620}
+                      height={520}
+                      className="mx-auto h-auto w-full max-w-[500px] drop-shadow-[0_20px_45px_rgba(124,58,237,0.14)]"
+                      priority
+                    />
+                  </m.div>
+
+                  <m.div
+                    style={{ y: prefersReducedMotion ? 0 : doodleY }}
+                    animate={prefersReducedMotion ? undefined : { rotate: [-2, 2, -2] }}
+                    transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute left-4 top-8 hidden rounded-2xl border border-white/70 bg-white/90 px-3 py-2 shadow-card md:block"
+                  >
+                    <div className="flex items-center gap-2 text-sm font-medium text-text-primary">
+                      <Icons.Camera className="h-4 w-4 text-primary-600" />
+                      Travel creator
+                    </div>
+                    <p className="mt-1 text-xs text-text-muted">Meghalaya · 84K followers</p>
+                  </m.div>
+
+                  <m.div
+                    style={{ y: prefersReducedMotion ? 0 : doodleY }}
+                    animate={prefersReducedMotion ? undefined : { y: [0, -8, 0] }}
+                    transition={{ duration: 4.4, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute right-4 top-20 hidden rounded-2xl border border-white/70 bg-white/90 px-3 py-2 shadow-card md:block"
+                  >
+                    <div className="flex items-center gap-2 text-sm font-medium text-text-primary">
+                      <Icons.Megaphone className="h-4 w-4 text-secondary" />
+                      Campaign ready
+                    </div>
+                    <p className="mt-1 text-xs text-text-muted">Assam · Brand brief matched</p>
+                  </m.div>
+
+                  <m.div
+                    style={{ y: prefersReducedMotion ? 0 : doodleY }}
+                    animate={prefersReducedMotion ? undefined : { y: [0, -10, 0] }}
+                    transition={{ duration: 5.2, repeat: Infinity, ease: "easeInOut", delay: 0.4 }}
+                    className="absolute left-6 bottom-6 hidden rounded-2xl border border-white/70 bg-white/90 px-3 py-2 shadow-card md:block"
+                  >
+                    <div className="flex items-center gap-2 text-sm font-medium text-text-primary">
+                      <Icons.Sparkles className="h-4 w-4 text-gold" />
+                      Verified creators
+                    </div>
+                    <p className="mt-1 text-xs text-text-muted">100+ successful collaborations</p>
+                  </m.div>
+                </div>
+              </div>
+            </m.div>
+
+            <div className="mt-4 flex gap-3 overflow-x-auto pb-2 lg:absolute lg:-left-6 lg:bottom-10 lg:mt-0 lg:w-auto lg:gap-4 lg:overflow-visible lg:pb-0">
+              {featuredCreators.map((creator, index) => (
+                <m.article
+                  key={creator.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.05 + index * 0.1, duration: 0.5 }}
+                  whileHover={prefersReducedMotion ? undefined : { y: -6, scale: 1.02 }}
+                  className="group relative min-w-[16rem] flex-1 overflow-hidden rounded-[28px] border border-white/75 bg-white/92 p-4 shadow-card backdrop-blur-md lg:absolute lg:w-[16rem]"
+                  style={{
+                    right: index % 2 === 0 ? `${4 + index * 2}%` : undefined,
+                    left: index % 2 === 0 ? undefined : `${8 + index * 2}%`,
+                    top: `${8 + index * 17}%`,
+                  }}
+                  data-cursor-expand="true"
                 >
-                  About
-                </Link>
+                  <div className={cn("absolute inset-0 bg-gradient-to-br opacity-10", creator.accent)} />
+                  <div className="relative flex items-start gap-3">
+                    <div className={cn("flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br text-lg font-semibold text-white shadow-md", creator.accent)}>
+                      {creator.initials}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <h4 className="truncate text-sm font-semibold text-text-primary">{creator.name}</h4>
+                        {creator.isVerified ? <Icons.BadgeCheck className="h-4 w-4 text-success" /> : null}
+                      </div>
+                      <p className="mt-1 text-xs text-text-muted">{creator.category} · {creator.city}, {creator.state}</p>
+                    </div>
+                  </div>
+                  <div className="relative mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                    <div className="rounded-2xl bg-background px-2 py-2">
+                      <span className="block font-semibold text-text-primary">{formatNumber(creator.followers)}</span>
+                      <span className="text-text-muted">Followers</span>
+                    </div>
+                    <div className="rounded-2xl bg-background px-2 py-2">
+                      <span className="block font-semibold text-text-primary">{formatNumber(creator.avgViews)}</span>
+                      <span className="text-text-muted">Views</span>
+                    </div>
+                    <div className="rounded-2xl bg-background px-2 py-2">
+                      <span className="block font-semibold text-text-primary">{creator.engagementRate.toFixed(1)}%</span>
+                      <span className="text-text-muted">Engagement</span>
+                    </div>
+                  </div>
+                  <div className="relative mt-3 flex flex-wrap gap-2">
+                    {creator.tags.map((tag) => (
+                      <span key={tag} className="rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-text-secondary shadow-sm ring-1 ring-border-light">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="relative mt-4 rounded-2xl bg-background/90 p-3 text-xs leading-5 text-text-muted">
+                    {creator.bio}
+                  </div>
+                  <div className="pointer-events-none absolute right-3 top-3 opacity-0 transition group-hover:opacity-100">
+                    <div className="rounded-full bg-white px-3 py-1.5 text-xs font-medium text-primary-600 shadow-md ring-1 ring-border-light">
+                      Quick preview
+                    </div>
+                  </div>
+                </m.article>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FeaturesSection() {
+  return (
+    <section className="container-app pb-20 pt-20 lg:pt-28">
+      <AnimatedSectionHeading
+        eyebrow="Why CreatorNE"
+        title={
+          <>
+            Everything you need to <span className="text-gradient-primary">succeed</span>
+          </>
+        }
+        accent="green"
+        description="A creator marketplace has to feel both trustworthy and exciting. These are the foundations that give the platform its momentum."
+      />
+
+      <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        {homeFeatures.map((feature, index) => (
+          <m.article
+            key={feature.title}
+            initial={{ opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ delay: index * 0.05, duration: 0.45 }}
+            whileHover={{ y: -8 }}
+            className="squircle group relative overflow-hidden border border-white/80 bg-white/90 p-6 shadow-card transition-shadow duration-300 hover:shadow-[0_22px_48px_rgba(124,58,237,0.14)]"
+            data-cursor-expand="true"
+          >
+            <div className={cn("absolute inset-0 bg-gradient-to-br opacity-[0.08] transition-opacity group-hover:opacity-[0.12]", feature.accent)} />
+            <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-primary-600 shadow-sm transition-transform group-hover:scale-105">
+              <Icon name={feature.icon} className="h-5 w-5" />
+            </div>
+            <h3 className="relative mt-5 text-xl font-semibold text-text-primary">{feature.title}</h3>
+            <p className="relative mt-3 text-sm leading-7 text-text-muted">{feature.description}</p>
+          </m.article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FeaturedCreatorsSection() {
+  return (
+    <section className="container-app pb-20">
+      <AnimatedSectionHeading
+        eyebrow="Featured Creators"
+        title={<>Creators with real audience momentum</>}
+        accent="purple"
+        description="A few of the profiles that show how the platform can surface verified talent with enough detail to make collaboration decisions faster."
+      />
+
+      <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {featuredCreators.map((creator, index) => (
+          <m.article
+            key={creator.id}
+            initial={{ opacity: 0, y: 22 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ delay: index * 0.08, duration: 0.45 }}
+            whileHover={{ y: -6, scale: 1.01 }}
+            className="group overflow-hidden rounded-[30px] border border-white/80 bg-white/90 shadow-card"
+            data-cursor-expand="true"
+          >
+            <div className={cn("h-32 bg-gradient-to-br", creator.accent)} />
+            <div className="relative px-5 pb-5 pt-0">
+              <div className="-mt-10 flex items-end justify-between gap-3">
+                <div className="flex h-20 w-20 items-center justify-center rounded-3xl border-4 border-white bg-white text-2xl font-semibold text-primary-700 shadow-[0_14px_30px_rgba(15,23,42,0.14)]">
+                  {creator.initials}
+                </div>
+                {creator.isVerified ? (
+                  <div className="rounded-full bg-success/10 px-3 py-1 text-xs font-medium text-success">
+                    Verified
+                  </div>
+                ) : null}
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-text-primary">{creator.name}</h3>
+              <p className="mt-1 text-sm text-text-muted">{creator.category} · {creator.city}, {creator.state}</p>
+              <p className="mt-3 line-clamp-3 text-sm leading-7 text-text-secondary">{creator.bio}</p>
+              <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+                <div className="rounded-2xl bg-background px-2 py-2">
+                  <span className="block font-semibold text-text-primary">{formatNumber(creator.followers)}</span>
+                  <span className="text-text-muted">Followers</span>
+                </div>
+                <div className="rounded-2xl bg-background px-2 py-2">
+                  <span className="block font-semibold text-text-primary">{formatNumber(creator.avgViews)}</span>
+                  <span className="text-text-muted">Views</span>
+                </div>
+                <div className="rounded-2xl bg-background px-2 py-2">
+                  <span className="block font-semibold text-text-primary">{creator.engagementRate.toFixed(1)}%</span>
+                  <span className="text-text-muted">Engagement</span>
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {creator.tags.map((tag) => (
+                  <span key={tag} className="rounded-full bg-primary-50 px-3 py-1 text-[11px] font-medium text-primary-700">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div className="pointer-events-none absolute right-5 top-5 rounded-full border border-white/80 bg-white/90 px-3 py-1.5 text-xs font-medium text-primary-600 opacity-0 shadow-md transition group-hover:opacity-100">
+                Quick preview
+              </div>
+            </div>
+          </m.article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FeaturedBrandsSection() {
+  const marqueeBrands = [...featuredBrands, ...featuredBrands];
+
+  return (
+    <section className="container-app pb-20">
+      <AnimatedSectionHeading
+        eyebrow="Featured Brands"
+        title={<>Brands ready to collaborate with the region&apos;s strongest creators</>}
+        accent="pink"
+        description="The marquee treatment gives the brand layer the kinetic feel planned for the homepage while keeping the content readable and fast."
+      />
+
+      <div className="marquee-pause mt-10 overflow-hidden rounded-[34px] border border-white/80 bg-white/85 p-4 shadow-card backdrop-blur-md">
+        <div className="marquee-track flex min-w-max items-center gap-4">
+          {marqueeBrands.map((brand, index) => (
+            <div
+              key={`${brand.id}-${index}`}
+              className="flex min-w-[18rem] items-center gap-4 rounded-[28px] border border-border-light bg-background px-4 py-4 shadow-sm"
+            >
+              <div className={cn("flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br text-sm font-semibold text-white shadow-sm", brand.accent)}>
+                {brand.logoInitials}
+              </div>
+              <div className="min-w-0">
+                <h3 className="truncate text-base font-semibold text-text-primary">{brand.brandName}</h3>
+                <p className="text-sm text-text-muted">{brand.industry} · {brand.targetState}</p>
+              </div>
+              <div className="ml-auto rounded-full bg-white px-3 py-1.5 text-xs font-medium text-text-secondary shadow-sm ring-1 ring-border-light">
+                {brand.campaignGoal}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CategoriesSection() {
+  const [activeCategory, setActiveCategory] = useState(homeCategories[0]?.slug ?? "travel");
+
+  return (
+    <section className="container-app pb-20">
+      <AnimatedSectionHeading
+        eyebrow="Explore Categories"
+        title={<>Find creators in every niche</>}
+        accent="green"
+        description="The category bar is intentionally scrollable on mobile so the experience stays touch-first without collapsing the density of the design."
+      />
+
+      <div className="mt-8 overflow-x-auto pb-2 scrollbar-hide">
+        <div className="flex min-w-max gap-3">
+          {homeCategories.map((category, index) => {
+            const IconName = resolveIcon(category.icon);
+
+            return (
+              <m.button
+                key={category.slug}
+                type="button"
+                onClick={() => setActiveCategory(category.slug)}
+                initial={{ opacity: 0, x: -18 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ delay: index * 0.05, duration: 0.35 }}
+                whileTap={{ scale: 0.96 }}
+                className={cn(
+                  "relative flex items-center gap-2 rounded-full border px-4 py-3 text-sm font-medium transition",
+                  activeCategory === category.slug
+                    ? "border-primary-200 bg-primary-50 text-primary-700 shadow-sm"
+                    : "border-border bg-white text-text-secondary hover:border-primary-200 hover:text-primary-600",
+                )}
+                data-cursor-expand="true"
+              >
+                {IconName ? <Icon name={category.icon} className="h-4 w-4" /> : null}
+                {category.name}
+                <span className="ml-1 rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-text-muted ring-1 ring-border-light">
+                  {category.creatorCount}
+                </span>
+              </m.button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HowItWorksSection() {
+  const [activeTab, setActiveTab] = useState<"creator" | "brand">("creator");
+  const activeSteps = activeTab === "creator" ? creatorSteps : brandSteps;
+
+  return (
+    <section id="how-it-works" className="container-app pb-20">
+      <AnimatedSectionHeading
+        eyebrow="How It Works"
+        title={<>Simple flows for creators and brands</>}
+        accent="purple"
+        description="The two-path structure keeps the onboarding story clear while letting each audience see their own next step immediately."
+      />
+
+      <div className="mt-8 inline-flex rounded-full border border-border bg-white p-1 shadow-sm">
+        {[
+          { key: "creator", label: "For Creators" },
+          { key: "brand", label: "For Brands" },
+        ].map((tab) => {
+          const active = activeTab === tab.key;
+
+          return (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setActiveTab(tab.key as "creator" | "brand")}
+              className={cn(
+                "relative rounded-full px-4 py-2.5 text-sm font-semibold transition",
+                active ? "bg-primary-600 text-white shadow-sm" : "text-text-muted hover:text-text-primary",
+              )}
+              data-cursor-expand="true"
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      <AnimatePresence mode="wait">
+        <m.div
+          key={activeTab}
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -30 }}
+          transition={{ duration: 0.35 }}
+          className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-5"
+        >
+          {activeSteps.map((step, index) => (
+            <m.article
+              key={step.title}
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.08, duration: 0.4 }}
+              whileHover={{ y: -6 }}
+              className="squircle border border-white/80 bg-white/90 p-5 shadow-card"
+              data-cursor-expand="true"
+            >
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-50 text-primary-600 shadow-sm">
+                <Icon name={step.icon} className="h-5 w-5" />
+              </div>
+              <div className="mt-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.26em] text-text-light">
+                Step {index + 1}
+              </div>
+              <h3 className="mt-3 text-lg font-semibold text-text-primary">{step.title}</h3>
+              <p className="mt-2 text-sm leading-7 text-text-muted">{step.description}</p>
+            </m.article>
+          ))}
+        </m.div>
+      </AnimatePresence>
+    </section>
+  );
+}
+
+function TestimonialsSection() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const activeTestimonial = homeTestimonials[activeIndex];
+
+  useEffect(() => {
+    if (paused) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setDirection(1);
+      setActiveIndex((current) => (current + 1) % homeTestimonials.length);
+    }, 5000);
+
+    return () => window.clearInterval(timer);
+  }, [paused]);
+
+  const paginate = (nextDirection: number) => {
+    setDirection(nextDirection);
+    setActiveIndex((current) => {
+      const next = current + nextDirection;
+
+      if (next < 0) {
+        return homeTestimonials.length - 1;
+      }
+
+      return next % homeTestimonials.length;
+    });
+  };
+
+  return (
+    <section className="container-app pb-20" id="testimonials">
+      <AnimatedSectionHeading
+        eyebrow="Testimonials"
+        title={<>Creators and brands feel the difference</>}
+        accent="pink"
+        description="The carousel stays lightweight but still uses movement and momentum to create the sense of an active, living platform."
+      />
+
+      <div
+        className="mt-10 overflow-hidden rounded-[34px] border border-white/80 bg-white/90 p-6 shadow-card md:p-8"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        <AnimatePresence initial={false} custom={direction} mode="wait">
+          <m.div
+            key={activeTestimonial.id}
+            custom={direction}
+            initial={{ opacity: 0, x: direction > 0 ? 60 : -60 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: direction > 0 ? -60 : 60 }}
+            transition={{ duration: 0.42 }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.12}
+            onDragEnd={(_, info) => {
+              const swipe = info.offset.x * info.velocity.x;
+
+              if (swipe < -8000) {
+                paginate(1);
+              } else if (swipe > 8000) {
+                paginate(-1);
+              }
+            }}
+            className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr]"
+          >
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary-100 bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-700">
+                <Icons.MessageSquareQuote className="h-4 w-4" />
+                Trusted collaboration feedback
+              </div>
+              <p className="mt-6 text-2xl font-medium leading-9 text-text-primary md:text-3xl md:leading-[1.35]">
+                “{activeTestimonial.content}”
+              </p>
+              <div className="mt-8 flex items-center gap-4">
+                <div className={cn("flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br text-sm font-semibold text-white shadow-sm", activeTestimonial.accent)}>
+                  {activeTestimonial.avatar}
+                </div>
+                <div>
+                  <p className="text-lg font-semibold text-text-primary">{activeTestimonial.name}</p>
+                  <p className="text-sm text-text-muted">{activeTestimonial.role}</p>
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 md:gap-4">
-              <Link
-                href="/login"
-                className="hidden sm:inline-flex text-sm font-semibold text-[#4a4455] hover:text-[#630ed4] px-4 py-2 transition-colors"
+            <div className="flex items-center justify-center">
+              <div className="relative w-full max-w-md rounded-[32px] border border-border-light bg-[linear-gradient(180deg,rgba(255,255,255,0.95),rgba(248,250,252,0.95))] p-5 shadow-[0_20px_45px_rgba(15,23,42,0.12)]">
+                <div className="rounded-[28px] border border-border-light bg-white p-5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold uppercase tracking-[0.26em] text-text-light">Live pulse</span>
+                    <span className="rounded-full bg-success/10 px-3 py-1 text-xs font-medium text-success">Swipe to switch</span>
+                  </div>
+                  <div className="mt-6 grid gap-3">
+                    {homeTestimonials.map((item, index) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          setDirection(index > activeIndex ? 1 : -1);
+                          setActiveIndex(index);
+                        }}
+                        className={cn(
+                          "flex items-center gap-3 rounded-2xl border px-3 py-3 text-left transition",
+                          index === activeIndex
+                            ? "border-primary-200 bg-primary-50 shadow-sm"
+                            : "border-border-light bg-background hover:border-primary-200",
+                        )}
+                        data-cursor-expand="true"
+                      >
+                        <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br text-xs font-semibold text-white", item.accent)}>
+                          {item.avatar}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-sm font-semibold text-text-primary">{item.name}</div>
+                          <div className="truncate text-xs text-text-muted">{item.role}</div>
+                        </div>
+                        <div className={cn("h-2.5 w-2.5 rounded-full", index === activeIndex ? "bg-primary-600" : "bg-border")}></div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </m.div>
+        </AnimatePresence>
+
+        <div className="mt-6 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            {homeTestimonials.map((item, index) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => {
+                  setDirection(index > activeIndex ? 1 : -1);
+                  setActiveIndex(index);
+                }}
+                className={cn(
+                  "h-2.5 rounded-full transition-all",
+                  index === activeIndex ? "w-10 bg-primary-600" : "w-2.5 bg-border",
+                )}
+                aria-label={`Show testimonial from ${item.name}`}
+                data-cursor-expand="true"
+              />
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => paginate(-1)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-white text-text-primary transition hover:border-primary-200 hover:text-primary-600"
+              aria-label="Previous testimonial"
+              data-cursor-expand="true"
+            >
+              <Icons.ChevronLeft className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => paginate(1)}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-white text-text-primary transition hover:border-primary-200 hover:text-primary-600"
+              aria-label="Next testimonial"
+              data-cursor-expand="true"
+            >
+              <Icons.ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FaqSection() {
+  const [openIndex, setOpenIndex] = useState(0);
+
+  return (
+    <section id="faq" className="container-app pb-20">
+      <AnimatedSectionHeading
+        eyebrow="FAQ"
+        title={<>Common questions, answered cleanly</>}
+        accent="purple"
+        description="The FAQ keeps the launch story practical and should be easy to extend once the database-backed content arrives."
+      />
+
+      <div className="mt-10 grid gap-4 lg:grid-cols-2">
+        {homeFaqs.map((faq, index) => {
+          const isOpen = openIndex === index;
+
+          return (
+            <m.div
+              key={faq.question}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ delay: index * 0.05, duration: 0.4 }}
+              className="squircle border border-white/80 bg-white/90 shadow-card"
+            >
+              <button
+                type="button"
+                onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left"
+                data-cursor-expand="true"
               >
-                Login
-              </Link>
+                <span className="text-base font-semibold text-text-primary">{faq.question}</span>
+                <Icons.ChevronDown className={cn("h-5 w-5 shrink-0 text-primary-600 transition", isOpen ? "rotate-180" : "rotate-0")} />
+              </button>
+              <AnimatePresence initial={false}>
+                {isOpen ? (
+                  <m.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.28 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-5 pb-5 text-sm leading-7 text-text-muted">
+                      {faq.answer}
+                    </div>
+                  </m.div>
+                ) : null}
+              </AnimatePresence>
+            </m.div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+function AppCtaSection() {
+  return (
+    <section className="container-app pb-20">
+      <m.div
+        initial={{ opacity: 0, y: 32 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-120px" }}
+        transition={{ duration: 0.55 }}
+        className="relative overflow-hidden rounded-[38px] border border-white/80 bg-gradient-to-br from-primary-600 via-primary-700 to-secondary p-6 shadow-[0_30px_80px_rgba(124,58,237,0.22)] md:p-8"
+      >
+        <Image
+          src="/illustrations/cta-wave.svg"
+          alt=""
+          aria-hidden="true"
+          width={1440}
+          height={260}
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-full w-full object-cover opacity-70"
+        />
+        <div className="relative grid items-center gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="max-w-xl text-white">
+            <p className="text-sm font-semibold uppercase tracking-[0.32em] text-white/80">Mobile-ready growth</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">Take CreatorNE with you, everywhere.</h2>
+            <p className="mt-4 max-w-lg text-base leading-7 text-white/85 md:text-lg">
+              The mobile experience keeps the same premium energy as the homepage while making it easier to discover, shortlist, and collaborate on the move.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
               <Link
                 href="/register"
-                className="inline-flex items-center justify-center text-sm font-semibold text-white px-5 py-2.5 rounded-full bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] shadow-md hover:shadow-xl hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
+                className="rounded-full bg-white px-5 py-3 text-sm font-semibold text-primary-700 shadow-sm transition hover:-translate-y-0.5"
+                data-cursor-expand="true"
               >
                 Join as Creator
               </Link>
+              <Link
+                href="/find-creators"
+                className="rounded-full border border-white/30 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-sm transition hover:-translate-y-0.5 hover:bg-white/15"
+                data-cursor-expand="true"
+              >
+                Hire Creators
+              </Link>
             </div>
-          </nav>
-        </header>
-
-        <main className="pt-24 pb-16 min-h-screen">
-          {/* Hero & Advanced Search Section */}
-          <section className="relative py-12 md:py-16 overflow-hidden">
-            <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 text-center">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-[#151c27] mb-3">
-                Find the Voice of the Northeast
-              </h1>
-              <p className="text-base md:text-lg text-[#4a4455] max-w-2xl mx-auto mb-10">
-                Connect with 5,000+ vetted creators across Nagaland, Assam, Manipur, and beyond.
-              </p>
-
-              {/* Search Bar & Dropdowns Floating Container */}
-              <div className="bg-white p-3 md:p-4 rounded-[2rem] shadow-xl shadow-purple-900/5 max-w-4xl mx-auto flex flex-col md:flex-row items-stretch md:items-center gap-3 border border-[#ccc3d8]/30">
-                {/* Text Search Input */}
-                <div className="flex-1 flex items-center px-4 py-2 md:py-0 border-b md:border-b-0 md:border-r border-[#ccc3d8]/30">
-                  <Icons.Search className="w-5 h-5 text-[#7b7487] mr-3 shrink-0" />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search creators by name or niche..."
-                    className="w-full bg-transparent border-none focus:outline-none text-sm text-[#151c27] placeholder:text-[#7b7487]/70"
-                  />
-                  {searchQuery ? (
-                    <button
-                      onClick={() => setSearchQuery("")}
-                      className="p-1 text-[#7b7487] hover:text-[#151c27]"
-                    >
-                      <Icons.X className="w-4 h-4" />
-                    </button>
-                  ) : null}
-                </div>
-
-                {/* Category Dropdown */}
-                <div className="flex-1 flex items-center px-4 py-2 md:py-0 border-b md:border-b-0 md:border-r border-[#ccc3d8]/30">
-                  <Icons.Grid className="w-5 h-5 text-[#7b7487] mr-3 shrink-0" />
-                  <select
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full bg-transparent border-none focus:outline-none text-sm text-[#151c27] appearance-none cursor-pointer pr-4"
-                  >
-                    {CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Location Dropdown */}
-                <div className="flex-1 flex items-center px-4 py-2 md:py-0">
-                  <Icons.MapPin className="w-5 h-5 text-[#7b7487] mr-3 shrink-0" />
-                  <select
-                    value={selectedLocation}
-                    onChange={(e) => setSelectedLocation(e.target.value)}
-                    className="w-full bg-transparent border-none focus:outline-none text-sm text-[#151c27] appearance-none cursor-pointer pr-4"
-                  >
-                    {LOCATIONS.map((loc) => (
-                      <option key={loc} value={loc}>
-                        {loc}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Search Action Button */}
-                <button
-                  type="button"
-                  className="bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-white px-8 py-3.5 rounded-[1.5rem] font-semibold text-sm flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-purple-500/25 active:scale-95 transition-all"
-                >
-                  <Icons.Search className="w-4 h-4" />
-                  <span>Search</span>
-                </button>
-              </div>
+            <div className="mt-6 flex flex-wrap gap-3 text-sm text-white/85">
+              {[
+                "Touch-friendly",
+                "Fast discovery",
+                "Secure onboarding",
+                "Built for mobile first",
+              ].map((item) => (
+                <span key={item} className="rounded-full border border-white/20 bg-white/10 px-3 py-1.5 backdrop-blur-sm">
+                  {item}
+                </span>
+              ))}
             </div>
-          </section>
+          </div>
 
-          {/* Directory Main Content (Sidebar + Grid) */}
-          <div className="max-w-7xl mx-auto px-4 md:px-8 pb-16 flex flex-col lg:flex-row gap-8">
-            {/* Sidebar Refine Filters */}
-            <aside className="hidden lg:block w-72 shrink-0 space-y-6">
-              <div className="bg-white p-6 rounded-2xl border border-[#ccc3d8]/30 shadow-sm space-y-6">
-                <h3 className="text-xl font-bold text-[#151c27]">Refine Results</h3>
-
-                {/* Platform Filter */}
-                <div className="space-y-3">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-[#4a4455]">
-                    Platform
-                  </p>
-                  <div className="space-y-2">
-                    {[
-                      { id: "instagram", label: "Instagram" },
-                      { id: "youtube", label: "YouTube" },
-                      { id: "tiktok", label: "TikTok (Global)" },
-                    ].map((platform) => (
-                      <label
-                        key={platform.id}
-                        className="flex items-center gap-3 cursor-pointer group"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={selectedPlatforms.includes(platform.id)}
-                          onChange={() => togglePlatform(platform.id)}
-                          className="rounded text-[#630ed4] focus:ring-[#7c3aed] border-[#ccc3d8] w-4 h-4"
-                        />
-                        <span className="text-sm text-[#4a4455] group-hover:text-[#630ed4] transition-colors">
-                          {platform.label}
-                        </span>
-                      </label>
-                    ))}
+          <div className="relative mx-auto w-full max-w-[430px]">
+            <m.div
+              initial={{ opacity: 0, y: 40, scale: 0.96 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, margin: "-120px" }}
+              transition={{ duration: 0.6 }}
+              animate={{ y: [0, -8, 0] }}
+              className="relative overflow-hidden rounded-[34px] border border-white/20 bg-white/95 p-4 text-text-primary shadow-[0_24px_60px_rgba(15,23,42,0.18)]"
+            >
+              <div className="rounded-[28px] border border-border-light bg-background p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.26em] text-primary-600">CreatorNE app</p>
+                    <h3 className="mt-1 text-lg font-semibold">Discovery in your pocket</h3>
                   </div>
+                  <div className="rounded-full bg-success/10 px-3 py-1 text-xs font-medium text-success">Live</div>
                 </div>
-
-                <div className="h-[1px] bg-[#ccc3d8]/30" />
-
-                {/* Engagement Rate Slider */}
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#4a4455]">
-                      Engagement Rate
-                    </p>
-                    <span className="text-xs font-bold text-[#4b41e1]">
-                      {minEngagement}%+
-                    </span>
-                  </div>
-                  <input
-                    type="range"
-                    min="1"
-                    max="10"
-                    value={minEngagement}
-                    onChange={(e) => setMinEngagement(Number(e.target.value))}
-                    className="w-full h-2 bg-[#e2e8f8] rounded-full appearance-none cursor-pointer accent-[#630ed4]"
-                  />
-                  <div className="flex justify-between text-xs text-[#7b7487]">
-                    <span>1%</span>
-                    <span>10%+</span>
-                  </div>
-                </div>
-
-                <div className="h-[1px] bg-[#ccc3d8]/30" />
-
-                {/* Verification Status */}
-                <div className="space-y-3">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-[#4a4455]">
-                    Verification Status
-                  </p>
-                  <label className="flex items-center gap-3 cursor-pointer group">
-                    <input
-                      type="checkbox"
-                      checked={verifiedOnly}
-                      onChange={(e) => setVerifiedOnly(e.target.checked)}
-                      className="rounded text-[#630ed4] focus:ring-[#7c3aed] border-[#ccc3d8] w-4 h-4"
-                    />
-                    <span className="text-sm text-[#4a4455] group-hover:text-[#630ed4] transition-colors flex items-center gap-1.5">
-                      <span>Verified Only</span>
-                      <Icons.BadgeCheck className="w-4 h-4 text-[#4b41e1] fill-[#4b41e1]/10" />
-                    </span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Need Help Concierge Card */}
-              <div className="bg-gradient-to-br from-[#7c3aed]/10 to-[#4b41e1]/10 p-6 rounded-2xl border border-[#7c3aed]/20">
-                <h4 className="text-lg font-bold text-[#630ed4] mb-1">Need Help?</h4>
-                <p className="text-xs leading-relaxed text-[#4a4455] mb-4">
-                  Our concierge team can find the perfect match for your campaign.
-                </p>
-                <Link
-                  href="/contact"
-                  className="block w-full py-2.5 text-center bg-white text-[#630ed4] border border-[#630ed4] text-xs font-bold rounded-xl hover:bg-[#630ed4] hover:text-white transition-all duration-200"
-                >
-                  Talk to an Expert
-                </Link>
-              </div>
-            </aside>
-
-            {/* Creator Grid & Counter */}
-            <div className="flex-1">
-              {/* Header Bar */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <p className="text-sm text-[#4a4455]">
-                  <span className="font-bold text-[#151c27]">
-                    {filteredCreators.length * 200 + 48}
-                  </span>{" "}
-                  creators found in{" "}
-                  <span className="font-bold text-[#151c27]">{selectedLocation}</span>
-                </p>
-
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-[#7b7487]">Sort by:</span>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="bg-transparent border-none text-xs font-bold text-[#151c27] focus:outline-none cursor-pointer"
-                  >
-                    <option value="relevance">Relevance</option>
-                    <option value="followers">Follower Count</option>
-                    <option value="engagement">Engagement Rate</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Creator Cards Grid */}
-              {filteredCreators.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {filteredCreators.map((creator) => (
-                    <m.div
-                      key={creator.id}
-                      initial={{ opacity: 0, y: 16 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="bg-white rounded-2xl border border-[#ccc3d8]/30 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col justify-between"
-                    >
-                      <div>
-                        {/* Image Container */}
-                        <div className="relative h-64 w-full bg-slate-100 overflow-hidden">
-                          <img
-                            src={creator.image}
-                            alt={creator.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                          {creator.isVerified ? (
-                            <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1 shadow-sm">
-                              <Icons.BadgeCheck className="w-3.5 h-3.5 text-[#4b41e1]" />
-                              <span className="text-[10px] font-bold uppercase tracking-wider text-[#151c27]">
-                                Verified
-                              </span>
-                            </div>
-                          ) : null}
+                <div className="mt-4 space-y-3">
+                  {[
+                    { title: "Travel creators in Meghalaya", detail: "12 verified results found" },
+                    { title: "Fashion creators in Assam", detail: "3 shortlists ready" },
+                    { title: "Brand message inbox", detail: "2 unread replies" },
+                  ].map((item, index) => (
+                    <div key={item.title} className="rounded-3xl border border-border-light bg-white p-4 shadow-sm">
+                      <div className="flex items-center gap-3">
+                        <div className={cn("flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br text-white", index === 0 ? "from-primary-600 to-secondary" : index === 1 ? "from-accent-pink to-primary-600" : "from-success to-secondary") }>
+                          <Icons.Smartphone className="h-4 w-4" />
                         </div>
-
-                        {/* Card Info */}
-                        <div className="p-5 space-y-4">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <h4 className="text-xl font-bold text-[#151c27]">
-                                {creator.name}
-                              </h4>
-                              <div className="flex items-center gap-1 text-xs text-[#4a4455] mt-0.5">
-                                <Icons.MapPin className="w-3.5 h-3.5 text-[#7b7487]" />
-                                <span>
-                                  {creator.city}, {creator.state}
-                                </span>
-                              </div>
-                            </div>
-                            <span className="bg-[#7c3aed]/10 text-[#630ed4] px-2.5 py-1 rounded-lg text-xs font-semibold">
-                              {creator.category}
-                            </span>
-                          </div>
-
-                          {/* Stats Container */}
-                          <div className="grid grid-cols-2 gap-3 p-3 bg-[#f0f3ff] rounded-xl">
-                            <div>
-                              <p className="text-[10px] text-[#7b7487] uppercase font-bold tracking-wider">
-                                Followers
-                              </p>
-                              <p className="text-lg font-bold text-[#151c27]">
-                                {creator.followerText}
-                              </p>
-                            </div>
-                            <div>
-                              <p className="text-[10px] text-[#7b7487] uppercase font-bold tracking-wider">
-                                Eng. Rate
-                              </p>
-                              <p className="text-lg font-bold text-[#4b41e1]">
-                                {creator.engagementRate}%
-                              </p>
-                            </div>
-                          </div>
+                        <div>
+                          <p className="text-sm font-semibold text-text-primary">{item.title}</p>
+                          <p className="text-xs text-text-muted">{item.detail}</p>
                         </div>
                       </div>
-
-                      {/* Card Actions */}
-                      <div className="px-5 pb-5 flex gap-3">
-                        <Link
-                          href={`/creators/${creator.slug}`}
-                          className="flex-1 py-2.5 text-center bg-white border border-[#ccc3d8] text-xs font-bold text-[#151c27] rounded-xl hover:border-[#630ed4] hover:text-[#630ed4] transition-colors"
-                        >
-                          View Profile
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => setHiringCreator(creator)}
-                          className="flex-1 py-2.5 text-center bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all"
-                        >
-                          Hire Now
-                        </button>
-                      </div>
-                    </m.div>
+                    </div>
                   ))}
                 </div>
-              ) : (
-                <div className="bg-white p-12 rounded-2xl border border-[#ccc3d8]/30 text-center space-y-4">
-                  <Icons.SearchX className="w-12 h-12 text-[#7b7487] mx-auto" />
-                  <h4 className="text-xl font-bold text-[#151c27]">No creators found</h4>
-                  <p className="text-sm text-[#4a4455] max-w-md mx-auto">
-                    Try adjusting your search keywords, location filters, or engagement parameters.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setSearchQuery("");
-                      setSelectedCategory("All Categories");
-                      setSelectedLocation("All Locations");
-                      setVerifiedOnly(false);
-                      setMinEngagement(1);
-                      setSelectedPlatforms([]);
-                    }}
-                    className="px-6 py-2.5 bg-[#630ed4] text-white text-xs font-bold rounded-xl shadow-md hover:bg-[#7c3aed] transition-colors"
-                  >
-                    Reset Filters
-                  </button>
-                </div>
-              )}
-
-              {/* Pagination */}
-              <div className="mt-12 flex justify-center items-center gap-2">
-                <button className="w-9 h-9 rounded-full border border-[#ccc3d8] flex items-center justify-center text-[#7b7487] hover:border-[#630ed4] hover:text-[#630ed4] transition-colors">
-                  <Icons.ChevronLeft className="w-4 h-4" />
-                </button>
-                <button className="w-9 h-9 rounded-full bg-[#630ed4] text-white font-bold text-xs">
-                  1
-                </button>
-                <button className="w-9 h-9 rounded-full border border-[#ccc3d8] flex items-center justify-center text-xs font-semibold text-[#4a4455] hover:border-[#630ed4] hover:text-[#630ed4] transition-colors">
-                  2
-                </button>
-                <button className="w-9 h-9 rounded-full border border-[#ccc3d8] flex items-center justify-center text-xs font-semibold text-[#4a4455] hover:border-[#630ed4] hover:text-[#630ed4] transition-colors">
-                  3
-                </button>
-                <span className="text-xs text-[#7b7487] px-1">...</span>
-                <button className="w-9 h-9 rounded-full border border-[#ccc3d8] flex items-center justify-center text-xs font-semibold text-[#4a4455] hover:border-[#630ed4] hover:text-[#630ed4] transition-colors">
-                  12
-                </button>
-                <button className="w-9 h-9 rounded-full border border-[#ccc3d8] flex items-center justify-center text-[#7b7487] hover:border-[#630ed4] hover:text-[#630ed4] transition-colors">
-                  <Icons.ChevronRight className="w-4 h-4" />
-                </button>
               </div>
+            </m.div>
+          </div>
+        </div>
+      </m.div>
+    </section>
+  );
+}
+
+function Footer() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<string | null>(null);
+
+  const socialMap = useMemo(
+    () => ({
+      Instagram: Icons.Instagram,
+      YouTube: Icons.Youtube,
+      Twitter: Icons.Twitter,
+      Telegram: Icons.Send,
+      LinkedIn: Icons.Linkedin,
+    }),
+    [],
+  );
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setStatus(null);
+
+    const response = await fetch("/api/newsletter", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+
+    const payload = (await response.json().catch(() => null)) as { message?: string; error?: string } | null;
+
+    if (!response.ok) {
+      setStatus(payload?.error ?? "Something went wrong.");
+      return;
+    }
+
+    setEmail("");
+    setStatus(payload?.message ?? "Subscribed.");
+  };
+
+  return (
+    <footer className="border-t border-white/80 bg-white/70 backdrop-blur-md">
+      <div className="container-app py-16">
+        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.85fr_0.85fr_0.85fr_1.05fr]">
+          <div>
+            <Link href="/" className="inline-flex items-center gap-3">
+              <Image src="/logo.svg" alt="CreatorNE" width={44} height={44} className="h-11 w-11" />
+              <span className="text-lg font-semibold text-text-primary">CreatorNE</span>
+            </Link>
+            <p className="mt-4 max-w-sm text-sm leading-7 text-text-muted">
+              A premium creator discovery platform built for Northeast India, with a long-term path toward a shared API and mobile-first product ecosystem.
+            </p>
+            <div className="mt-5 flex items-center gap-3">
+              {SOCIAL_LINKS.map((social) => {
+                const SocialIcon = socialMap[social.icon as keyof typeof socialMap];
+
+                if (!SocialIcon) {
+                  return null;
+                }
+
+                return (
+                  <a
+                    key={social.name}
+                    href={social.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-text-secondary transition hover:-translate-y-0.5 hover:border-primary-200 hover:text-primary-600"
+                    aria-label={social.name}
+                    data-cursor-expand="true"
+                  >
+                    <SocialIcon className="h-4 w-4" />
+                  </a>
+                );
+              })}
             </div>
           </div>
+
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.26em] text-text-muted">Platform</h3>
+            <ul className="mt-4 space-y-3 text-sm text-text-secondary">
+              <li><Link href="/find-creators" className="hover:text-primary-600">Creators</Link></li>
+              <li><Link href="/categories" className="hover:text-primary-600">Categories</Link></li>
+              <li><Link href="/#how-it-works" className="hover:text-primary-600">How It Works</Link></li>
+              <li><Link href="/register?type=brand" className="hover:text-primary-600">For Brands</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.26em] text-text-muted">Company</h3>
+            <ul className="mt-4 space-y-3 text-sm text-text-secondary">
+              <li><Link href="/about" className="hover:text-primary-600">About Us</Link></li>
+              <li><Link href="/blog" className="hover:text-primary-600">Blog</Link></li>
+              <li><Link href="/contact" className="hover:text-primary-600">Contact</Link></li>
+              <li><Link href="/terms" className="hover:text-primary-600">Terms &amp; Conditions</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.26em] text-text-muted">Resources</h3>
+            <ul className="mt-4 space-y-3 text-sm text-text-secondary">
+              <li><Link href="/faq" className="hover:text-primary-600">FAQ</Link></li>
+              <li><Link href="/creator-guide" className="hover:text-primary-600">Creator Guide</Link></li>
+              <li><Link href="/help" className="hover:text-primary-600">Help Center</Link></li>
+              <li><Link href="/privacy" className="hover:text-primary-600">Privacy Policy</Link></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.26em] text-text-muted">Newsletter</h3>
+            <form className="mt-4 space-y-3" onSubmit={handleSubmit}>
+              <input
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="Enter your email"
+                className="h-12 w-full rounded-full border border-border bg-white px-4 text-sm text-text-primary outline-none transition placeholder:text-text-light focus:border-primary-300 focus:ring-4 focus:ring-primary-100"
+              />
+              <button
+                type="submit"
+                className="inline-flex h-12 w-full items-center justify-center rounded-full bg-gradient-to-r from-primary-600 to-secondary px-5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5"
+                data-cursor-expand="true"
+              >
+                Subscribe
+              </button>
+            </form>
+            {status ? <p className="mt-3 text-sm text-text-muted">{status}</p> : null}
+          </div>
+        </div>
+
+        <div className="mt-12 flex flex-col gap-4 border-t border-border-light pt-6 text-sm text-text-muted md:flex-row md:items-center md:justify-between">
+          <p>Made with care in Northeast India.</p>
+          <p>© {new Date().getFullYear()} {APP_CONFIG.name}. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function ScrollToTopButton() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setVisible(window.scrollY > 500);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  if (!visible) {
+    return null;
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      className="fixed bottom-6 right-6 z-[70] inline-flex h-12 w-12 items-center justify-center rounded-full bg-white text-primary-600 shadow-[0_18px_32px_rgba(15,23,42,0.18)] transition hover:-translate-y-0.5"
+      aria-label="Scroll back to top"
+      data-cursor-expand="true"
+    >
+      <Icons.MoveUp className="h-4 w-4" />
+    </button>
+  );
+}
+
+export function HomePage() {
+  const { scrollY } = useScroll();
+
+  return (
+    <LazyMotion features={domAnimation}>
+      <div className="relative min-h-screen overflow-hidden bg-background text-text-primary">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top,_rgba(124,58,237,0.08),_transparent_40%),radial-gradient(circle_at_bottom_left,_rgba(6,182,212,0.08),_transparent_34%)]" />
+        <ScrollProgressBar />
+        <CursorFollower />
+        <Navbar />
+
+        <main>
+          <HeroSection scrollY={scrollY} />
+          <FeaturesSection />
+          <FeaturedCreatorsSection />
+          <FeaturedBrandsSection />
+          <CategoriesSection />
+          <HowItWorksSection />
+          <TestimonialsSection />
+          <FaqSection />
+          <AppCtaSection />
         </main>
 
-        {/* Hire Creator Modal */}
-        <AnimatePresence>
-          {hiringCreator ? (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-              <m.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white rounded-3xl p-6 md:p-8 max-w-lg w-full shadow-2xl relative space-y-6"
-              >
-                <button
-                  onClick={() => setHiringCreator(null)}
-                  className="absolute top-6 right-6 text-[#7b7487] hover:text-[#151c27] p-1"
-                >
-                  <Icons.X className="w-5 h-5" />
-                </button>
-
-                <div className="flex items-center gap-4">
-                  <img
-                    src={hiringCreator.image}
-                    alt={hiringCreator.name}
-                    className="w-16 h-16 rounded-2xl object-cover"
-                  />
-                  <div>
-                    <h3 className="text-2xl font-bold text-[#151c27]">
-                      Hire {hiringCreator.name}
-                    </h3>
-                    <p className="text-xs text-[#4a4455]">
-                      {hiringCreator.category} • {hiringCreator.city}, {hiringCreator.state}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-[#f0f3ff] rounded-2xl space-y-2 text-xs">
-                  <div className="flex justify-between text-[#4a4455]">
-                    <span>Estimated rate per post:</span>
-                    <span className="font-bold text-[#151c27]">
-                      ₹{hiringCreator.priceEstimate.toLocaleString("en-IN")}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-[#4a4455]">
-                    <span>Average engagement:</span>
-                    <span className="font-bold text-[#4b41e1]">
-                      {hiringCreator.engagementRate}%
-                    </span>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#4a4455]">
-                    Campaign Brief / Message
-                  </label>
-                  <textarea
-                    rows={3}
-                    placeholder={`Tell ${hiringCreator.name} about your brand and campaign scope...`}
-                    className="w-full p-4 rounded-xl border border-[#ccc3d8] text-xs text-[#151c27] focus:outline-none focus:border-[#630ed4]"
-                  />
-                </div>
-
-                <div className="flex gap-3 pt-2">
-                  <button
-                    onClick={() => setHiringCreator(null)}
-                    className="flex-1 py-3 text-xs font-bold text-[#4a4455] border border-[#ccc3d8] rounded-xl hover:bg-slate-50 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <Link
-                    href={`/register?role=brand&creator=${hiringCreator.slug}`}
-                    className="flex-1 py-3 text-center text-xs font-bold text-white bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] rounded-xl shadow-md hover:shadow-lg transition-all"
-                  >
-                    Send Campaign Brief
-                  </Link>
-                </div>
-              </m.div>
-            </div>
-          ) : null}
-        </AnimatePresence>
-
-        {/* Footer */}
-        <footer className="bg-[#151c27] text-white border-t border-white/10">
-          <div className="max-w-7xl mx-auto px-4 md:px-8 py-16 grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="space-y-4">
-              <h2 className="text-2xl font-black bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] bg-clip-text text-transparent">
-                CreatorNE
-              </h2>
-              <p className="text-xs leading-relaxed text-slate-300 max-w-xs">
-                The bridge between global brands and Northeast India&apos;s unique creative energy.
-              </p>
-              <div className="flex gap-3 text-slate-400 pt-2">
-                <Icons.Globe className="w-4 h-4 hover:text-white cursor-pointer transition-colors" />
-                <Icons.Instagram className="w-4 h-4 hover:text-white cursor-pointer transition-colors" />
-                <Icons.Youtube className="w-4 h-4 hover:text-white cursor-pointer transition-colors" />
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#7C3AED]">
-                Platform
-              </h4>
-              <ul className="space-y-2 text-xs text-slate-300">
-                <li>
-                  <Link href="/" className="hover:text-white transition-colors">
-                    Browse Creators
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/find-creators" className="hover:text-white transition-colors">
-                    Brand Solutions
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blog" className="hover:text-white transition-colors">
-                    Case Studies
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#7C3AED]">
-                Legal
-              </h4>
-              <ul className="space-y-2 text-xs text-slate-300">
-                <li>
-                  <Link href="/privacy-policy" className="hover:text-white transition-colors">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms" className="hover:text-white transition-colors">
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="hover:text-white transition-colors">
-                    Contact Us
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-[#7C3AED]">
-                Newsletter
-              </h4>
-              <p className="text-xs text-slate-300">
-                Get insights on the NE creator economy.
-              </p>
-              <form onSubmit={(e) => e.preventDefault()} className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="Email address"
-                  className="bg-white/10 border border-white/20 rounded-xl px-3 py-2 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#7C3AED] w-full"
-                />
-                <button
-                  type="submit"
-                  className="bg-[#7C3AED] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#630ed4] transition-colors shrink-0"
-                >
-                  Join
-                </button>
-              </form>
-            </div>
-          </div>
-
-          <div className="py-6 border-t border-white/10 text-center text-xs text-slate-400">
-            © 2026 CreatorNE. Empowering Northeast India&apos;s Creative Economy.
-          </div>
-        </footer>
+        <Footer />
+        <ScrollToTopButton />
       </div>
     </LazyMotion>
   );
