@@ -37,17 +37,22 @@ export function Footer() {
             </p>
             <div className="mt-5 flex items-center gap-3">
               {SOCIAL_LINKS.map((social) => {
+                const IconComponent =
+                  (social.icon && Icons[social.icon as keyof typeof Icons] as Icons.LucideIcon) ||
+                  (social.name && Icons[social.name as keyof typeof Icons] as Icons.LucideIcon) ||
+                  Icons.Globe;
+
                 return (
                   <a
                     key={social.name}
                     href={social.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-text-secondary transition hover:-translate-y-0.5 hover:border-primary-200 hover:text-primary-600"
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-text-secondary transition hover:-translate-y-0.5 hover:border-primary-200 hover:text-primary-600 shadow-sm"
                     aria-label={social.name}
                     data-cursor-expand="true"
                   >
-                    <Icons.Globe className="h-4 w-4" />
+                    <IconComponent className="h-4 w-4" />
                   </a>
                 );
               })}
