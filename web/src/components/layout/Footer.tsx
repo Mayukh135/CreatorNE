@@ -45,7 +45,7 @@ export function Footer() {
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.85fr_0.85fr_0.85fr_1.05fr]">
           <div>
             <Link href="/" className="inline-flex items-center gap-3">
-              <Image src="/logo.svg" alt="CreatorNE" width={44} height={44} className="h-11 w-11" />
+              <Image src="/logo-icon.png" alt="CreatorNE" width={44} height={44} className="h-11 w-11 object-contain" />
               <span className="text-lg font-semibold text-text-primary">CreatorNE</span>
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-7 text-text-muted">

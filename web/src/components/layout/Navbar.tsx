@@ -40,7 +40,7 @@ export function Navbar() {
       >
         <div className="container-app flex items-center justify-between gap-4 py-4">
           <Link href="/" className="flex items-center gap-3" aria-label="CreatorNE home">
-            <Image src="/logo.svg" alt="CreatorNE" width={44} height={44} className="h-11 w-11" />
+            <Image src="/logo-icon.png" alt="CreatorNE" width={44} height={44} className="h-11 w-11 object-contain transition-transform duration-300 hover:scale-105" />
             <div className="hidden sm:block">
               <p className="text-sm font-semibold tracking-[0.22em] text-text-muted uppercase">
                 CreatorNE

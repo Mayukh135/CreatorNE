@@ -65,6 +65,14 @@ export const metadata: Metadata = {
     images: ["/og-image.png"],
     creator: "@creatorne",
   },
+  icons: {
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/favicon.ico" },
+    ],
+    shortcut: "/favicon.png",
+    apple: "/apple-touch-icon.png",
+  },
   robots: {
     index: true,
     follow: true,
