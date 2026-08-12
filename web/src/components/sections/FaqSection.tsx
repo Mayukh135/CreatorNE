@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import * as Icons from "lucide-react";
+import { ChevronDown } from "@/lib/icons";
 import { AnimatePresence, m } from "framer-motion";
 import { homeFaqs } from "@/lib/home-data";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -30,7 +30,7 @@ export function FaqSection() {
                 className="w-full p-6 text-left flex items-center justify-between gap-4 font-bold text-base text-[#151c27]"
               >
                 <span>{faq.question}</span>
-                <Icons.ChevronDown
+                <ChevronDown
                   className={cn(
                     "w-5 h-5 text-[#7b7487] transition-transform duration-200 shrink-0",
                     activeFaq === index ? "rotate-180 text-[#630ed4]" : ""

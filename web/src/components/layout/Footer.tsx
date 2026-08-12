@@ -4,7 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-import * as Icons from "lucide-react";
+import { resolveIcon, Globe } from "@/lib/icons";
+import type { LucideIcon } from "@/lib/icons";
 import { APP_CONFIG, SOCIAL_LINKS } from "@/lib/constants";
 import { useCookieConsent } from "@/components/common/CookieConsentContext";
 
@@ -18,11 +19,24 @@ export function Footer() {
     return null;
   }
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!email) return;
-    setStatus("Thanks for subscribing!");
-    setEmail("");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setStatus("Thanks for subscribing!");
+        setEmail("");
+      } else {
+        setStatus("Something went wrong. Try again.");
+      }
+    } catch {
+      setStatus("Something went wrong. Try again.");
+    }
   };
 
   return (
@@ -39,10 +53,10 @@ export function Footer() {
             </p>
             <div className="mt-5 flex items-center gap-3">
               {SOCIAL_LINKS.map((social) => {
-                const IconComponent =
-                  (social.icon && Icons[social.icon as keyof typeof Icons] as Icons.LucideIcon) ||
-                  (social.name && Icons[social.name as keyof typeof Icons] as Icons.LucideIcon) ||
-                  Icons.Globe;
+                const IconComponent: LucideIcon =
+                  (social.icon && resolveIcon(social.icon)) ||
+                  (social.name && resolveIcon(social.name)) ||
+                  Globe;
 
                 return (
                   <a
@@ -96,7 +110,6 @@ export function Footer() {
                   Cookie Preferences
                 </button>
               </li>
-              <li><Link href="/terms" className="hover:text-primary-600">Terms of Service</Link></li>
             </ul>
           </div>
 

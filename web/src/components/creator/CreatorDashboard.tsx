@@ -1,6 +1,6 @@
 "use client";
 
-import * as Icons from "lucide-react";
+import { resolveIcon } from "@/lib/icons";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { creatorCampaigns, creatorMessages, creatorNotifications, creatorProfiles } from "@/lib/creator-data";
@@ -8,7 +8,7 @@ import { cn, formatNumber } from "@/lib/utils";
 
 type CreatorTab = "profile" | "messages" | "campaigns" | "notifications";
 
-const dashboardTabs: { key: CreatorTab; label: string; icon: keyof typeof Icons }[] = [
+const dashboardTabs: { key: CreatorTab; label: string; icon: string }[] = [
   { key: "profile", label: "Profile", icon: "UserRound" },
   { key: "messages", label: "Messages", icon: "MessagesSquare" },
   { key: "campaigns", label: "Campaigns", icon: "LayoutGrid" },
@@ -53,7 +53,7 @@ export function CreatorDashboard() {
             <nav className="mt-5 space-y-2">
               {dashboardTabs.map((tab) => {
                 const active = activeTab === tab.key;
-                const TabIcon = Icons[tab.icon] as React.ComponentType<{ className?: string }>;
+                const TabIcon = resolveIcon(tab.icon) as React.ComponentType<{ className?: string }>;
 
                 return (
                   <button

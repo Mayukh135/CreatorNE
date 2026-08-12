@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import * as Icons from "lucide-react";
+import { ArrowLeft, RotateCcw, resolveIcon } from "@/lib/icons";
 import { useMemo, useState } from "react";
 import { directoryCategories, directoryCreators, directoryLanguages, directoryPlatforms, directoryStates } from "@/lib/directory-data";
 import { cn, formatNumber } from "@/lib/utils";
@@ -79,7 +79,7 @@ export function FindCreatorsPage({ initialCategory }: { initialCategory?: string
           <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
             <div>
               <Link href="/" className="inline-flex items-center gap-2 rounded-full border border-border-light bg-background px-4 py-2 text-sm font-medium text-text-secondary">
-                <Icons.ArrowLeft className="h-4 w-4" /> Back to home
+                <ArrowLeft className="h-4 w-4" /> Back to home
               </Link>
               <h1 className="mt-6 text-4xl font-semibold tracking-tight text-text-primary md:text-5xl">Find the Voice of the Northeast</h1>
               <p className="mt-4 max-w-3xl text-base leading-8 text-text-muted md:text-lg">
@@ -106,7 +106,7 @@ export function FindCreatorsPage({ initialCategory }: { initialCategory?: string
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <SortPicker value={sort} onChange={setSort} />
             <button type="button" onClick={clearFilters} className="inline-flex items-center gap-2 rounded-full border border-border-light bg-white px-4 py-2.5 text-sm font-medium text-text-secondary transition hover:border-primary-200 hover:text-primary-600">
-              <Icons.RotateCcw className="h-4 w-4" /> Clear filters
+              <RotateCcw className="h-4 w-4" /> Clear filters
             </button>
             <div className="ml-auto text-sm text-text-muted">
               {results.length} creators shown
@@ -216,8 +216,8 @@ function FilterSection({ title, children }: { title: string; children: React.Rea
   );
 }
 
-function SearchInput({ value, onChange, placeholder, icon }: { value: string; onChange: (value: string) => void; placeholder: string; icon: keyof typeof Icons }) {
-  const Icon = Icons[icon] as React.ComponentType<{ className?: string }>;
+function SearchInput({ value, onChange, placeholder, icon }: { value: string; onChange: (value: string) => void; placeholder: string; icon: string }) {
+  const Icon = resolveIcon(icon) as React.ComponentType<{ className?: string }>;
 
   return (
     <label className="relative block lg:col-span-1">

@@ -1,6 +1,6 @@
 "use client";
 
-import * as Icons from "lucide-react";
+import { resolveIcon } from "@/lib/icons";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { brandCampaigns, brandConversations, brandProfiles, brandShortlists } from "@/lib/brand-data";
@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 type BrandTab = "profile" | "messages" | "shortlist" | "campaigns";
 
-const dashboardTabs: { key: BrandTab; label: string; icon: keyof typeof Icons }[] = [
+const dashboardTabs: { key: BrandTab; label: string; icon: string }[] = [
   { key: "profile", label: "Profile", icon: "Building2" },
   { key: "messages", label: "Messages", icon: "MessagesSquare" },
   { key: "shortlist", label: "Shortlist", icon: "ListChecks" },
@@ -53,7 +53,7 @@ export function BrandDashboard() {
             <nav className="mt-5 space-y-2">
               {dashboardTabs.map((tab) => {
                 const active = activeTab === tab.key;
-                const TabIcon = Icons[tab.icon] as React.ComponentType<{ className?: string }>;
+                const TabIcon = resolveIcon(tab.icon) as React.ComponentType<{ className?: string }>;
 
                 return (
                   <button

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import * as Icons from "lucide-react";
+import { Sliders, X, Lock } from "@/lib/icons";
 import { AnimatePresence, m } from "framer-motion";
 import { useCookieConsent } from "@/components/common/CookieConsentContext";
 import { CookiePreferences } from "@/lib/cookie-consent";
@@ -78,7 +78,7 @@ export function CookiePreferencesModal() {
           <div className="flex items-center justify-between border-b border-[#ccc3d8]/30 pb-4">
             <div className="flex items-center gap-2.5">
               <span className="p-2 rounded-2xl bg-purple-100 text-[#7C3AED]">
-                <Icons.Sliders className="w-5 h-5" />
+                <Sliders className="w-5 h-5" />
               </span>
               <div>
                 <h2 id="cookie-modal-title" className="text-xl font-extrabold text-[#151c27]">
@@ -95,7 +95,7 @@ export function CookiePreferencesModal() {
               className="p-2 rounded-full border border-border text-[#7b7487] hover:text-[#151c27] hover:bg-slate-100 transition-colors"
               aria-label="Close modal"
             >
-              <Icons.X className="w-4 h-4" />
+              <X className="w-4 h-4" />
             </button>
           </div>
 
@@ -117,7 +117,7 @@ export function CookiePreferencesModal() {
                 </p>
               </div>
               <div className="shrink-0 pt-1">
-                <Icons.Lock className="w-5 h-5 text-purple-500" />
+                <Lock className="w-5 h-5 text-purple-500" />
               </div>
             </div>
 

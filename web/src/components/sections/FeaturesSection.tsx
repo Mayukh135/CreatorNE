@@ -1,25 +1,8 @@
 "use client";
 
-import * as Icons from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { DynamicIcon } from "@/lib/icons";
 import { homeFeatures } from "@/lib/home-data";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-
-type MotionIconName = keyof typeof Icons;
-
-function resolveIcon(name: string) {
-  return Icons[name as MotionIconName] as LucideIcon | undefined;
-}
-
-function Icon({ name, className }: { name: string; className?: string }) {
-  const ResolvedIcon = resolveIcon(name);
-
-  if (!ResolvedIcon) {
-    return null;
-  }
-
-  return <ResolvedIcon className={className} aria-hidden="true" />;
-}
 
 export function FeaturesSection() {
   return (
@@ -38,7 +21,7 @@ export function FeaturesSection() {
               className="p-8 rounded-3xl bg-[#f9f9ff] border border-[#ccc3d8]/30 hover:border-[#7C3AED]/40 hover:shadow-lg transition-all duration-300 group"
             >
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-white flex items-center justify-center mb-6 shadow-md shadow-purple-500/20 group-hover:scale-110 transition-transform">
-                <Icon name={feature.icon} className="w-6 h-6" />
+                <DynamicIcon name={feature.icon} className="w-6 h-6" />
               </div>
               <h3 className="text-xl font-bold text-[#151c27] mb-2">{feature.title}</h3>
               <p className="text-sm text-[#4a4455] leading-relaxed">

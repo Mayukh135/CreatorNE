@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { LazyMotion, domAnimation, m } from "framer-motion";
-import * as Icons from "lucide-react";
+import { Sparkles, Check, Chrome, Loader2, Mail, LockKeyhole } from "@/lib/icons";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 
@@ -283,7 +283,7 @@ export function AuthPage({
               <div className="relative flex h-full flex-col justify-between gap-10">
                 <div>
                   <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white/90 backdrop-blur-sm">
-                    <Icons.Sparkles className="h-4 w-4 text-gold" />
+                    <Sparkles className="h-4 w-4 text-gold" />
                     Phase 0.3 Auth Flow
                   </div>
                   <h1 className="mt-6 max-w-md text-4xl font-semibold tracking-tight md:text-5xl">
@@ -301,7 +301,7 @@ export function AuthPage({
                     <div key={item} className="rounded-[24px] border border-white/15 bg-white/10 p-4 text-sm text-white/90 backdrop-blur-sm">
                       <div className="flex items-start gap-3">
                         <span className="mt-0.5 inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/18 text-xs font-semibold">
-                          <Icons.Check className="h-4 w-4" />
+                          <Check className="h-4 w-4" />
                         </span>
                         <span>{item}</span>
                       </div>
@@ -348,7 +348,7 @@ export function AuthPage({
 
               <div className="mt-6 flex flex-wrap gap-3">
                 <SocialButton
-                  icon={Icons.Chrome}
+                  icon={Chrome}
                   label={socialLabel}
                   onClick={async () => {
                     await supabase.auth.signInWithOAuth({
@@ -501,11 +501,11 @@ export function AuthPage({
                   className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-primary-600 to-secondary px-5 text-sm font-semibold text-white shadow-[0_18px_30px_rgba(124,58,237,0.24)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loading ? (
-                    <Icons.Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : step === "entry" ? (
-                    <Icons.Mail className="h-4 w-4" />
+                    <Mail className="h-4 w-4" />
                   ) : (
-                    <Icons.LockKeyhole className="h-4 w-4" />
+                    <LockKeyhole className="h-4 w-4" />
                   )}
                   {step === "entry"
                     ? mode === "login"

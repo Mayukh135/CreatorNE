@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import * as Icons from "lucide-react";
+import { ArrowRight, Menu, X, MoveRight } from "@/lib/icons";
 import { AnimatePresence, m } from "framer-motion";
 import { NAV_LINKS } from "@/lib/constants";
 import { cn } from "@/lib/utils";
@@ -75,7 +75,7 @@ export function Navbar() {
               data-cursor-expand="true"
             >
               Join as Creator
-              <Icons.ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
@@ -86,7 +86,7 @@ export function Navbar() {
             aria-label="Open navigation menu"
             data-cursor-expand="true"
           >
-            <Icons.Menu className="h-5 w-5" />
+            <Menu className="h-5 w-5" />
           </button>
         </div>
       </header>
@@ -121,7 +121,7 @@ export function Navbar() {
                   onClick={() => setIsOpen(false)}
                   className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white text-text-primary"
                 >
-                  <Icons.X className="h-4 w-4" />
+                  <X className="h-4 w-4" />
                 </button>
               </div>
               <nav className="mt-8 space-y-2">
@@ -133,7 +133,7 @@ export function Navbar() {
                     onClick={() => setIsOpen(false)}
                   >
                     {link.label}
-                    <Icons.MoveRight className="h-4 w-4 text-primary-600" />
+                    <MoveRight className="h-4 w-4 text-primary-600" />
                   </Link>
                 ))}
               </nav>

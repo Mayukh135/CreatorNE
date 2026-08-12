@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import * as Icons from "lucide-react";
+import { resolveIcon } from "@/lib/icons";
 import { useMemo, useState } from "react";
 import { adminApprovals, adminSettings, adminStats, adminUsers } from "@/lib/admin-data";
 import { conversations, messages } from "@/lib/message-data";
@@ -9,7 +9,7 @@ import { cn, formatNumber } from "@/lib/utils";
 
 type AdminTab = "overview" | "approvals" | "users" | "messages" | "analytics" | "export" | "settings";
 
-const adminTabs: { key: AdminTab; label: string; icon: keyof typeof Icons }[] = [
+const adminTabs: { key: AdminTab; label: string; icon: string }[] = [
   { key: "overview", label: "Overview", icon: "LayoutDashboard" },
   { key: "approvals", label: "Approvals", icon: "ShieldCheck" },
   { key: "users", label: "Users", icon: "UsersRound" },
@@ -48,7 +48,7 @@ export function AdminDashboard() {
             <nav className="mt-5 space-y-2">
               {adminTabs.map((tab) => {
                 const active = activeTab === tab.key;
-                const TabIcon = Icons[tab.icon] as React.ComponentType<{ className?: string }>;
+                const TabIcon = resolveIcon(tab.icon) as React.ComponentType<{ className?: string }>;
 
                 return (
                   <button
@@ -298,8 +298,8 @@ function MetricCard({ label, value, note }: { label: string; value: string; note
   );
 }
 
-function ActionCard({ title, description, icon }: { title: string; description: string; icon: keyof typeof Icons }) {
-  const Icon = Icons[icon] as React.ComponentType<{ className?: string }>;
+function ActionCard({ title, description, icon }: { title: string; description: string; icon: string }) {
+  const Icon = resolveIcon(icon) as React.ComponentType<{ className?: string }>;
 
   return (
     <div className="rounded-[28px] border border-border-light bg-background p-5">

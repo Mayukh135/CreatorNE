@@ -1,26 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import * as Icons from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { ArrowRight, DynamicIcon } from "@/lib/icons";
 import { homeCategories } from "@/lib/home-data";
 import { cn } from "@/lib/utils";
 
-type MotionIconName = keyof typeof Icons;
-
-function resolveIcon(name: string) {
-  return Icons[name as MotionIconName] as LucideIcon | undefined;
-}
-
-function Icon({ name, className }: { name: string; className?: string }) {
-  const ResolvedIcon = resolveIcon(name);
-
-  if (!ResolvedIcon) {
-    return null;
-  }
-
-  return <ResolvedIcon className={className} aria-hidden="true" />;
-}
 
 interface CategoriesSectionProps {
   activeCategory: string | null;
@@ -48,7 +32,7 @@ export function CategoriesSection({
             className="inline-flex items-center gap-2 text-sm font-bold text-[#630ed4] hover:text-[#7C3AED] transition-colors"
           >
             <span>View all categories</span>
-            <Icons.ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
@@ -64,7 +48,7 @@ export function CategoriesSection({
                   : "bg-white text-[#151c27] border-[#ccc3d8]/30 hover:border-[#7C3AED]/40 hover:shadow-md"
               )}
             >
-              <Icon
+              <DynamicIcon
                 name={category.icon}
                 className={cn(
                   "w-6 h-6 mb-3 transition-colors",

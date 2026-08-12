@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, m } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from "@/lib/icons";
 import { useState } from "react";
 
 interface FaqItem {

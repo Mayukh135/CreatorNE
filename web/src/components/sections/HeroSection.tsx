@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import * as Icons from "lucide-react";
+import { Sparkles, ArrowRight, Camera, Megaphone, BadgeCheck } from "@/lib/icons";
 import { m } from "framer-motion";
 import { homeStats } from "@/lib/home-data";
 import { cn, formatNumber } from "@/lib/utils";
@@ -16,7 +16,7 @@ export function HeroSection() {
           <div className="lg:col-span-6 space-y-8">
             {/* Eyebrow Pill */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#7C3AED]/10 border border-[#7C3AED]/20">
-              <Icons.Sparkles className="w-4 h-4 text-[#7C3AED]" />
+              <Sparkles className="w-4 h-4 text-[#7C3AED]" />
               <span className="text-xs font-bold text-[#630ed4] tracking-wide">
                 The Creator Economy of Northeast India
               </span>
@@ -55,7 +55,7 @@ export function HeroSection() {
                 className="inline-flex items-center gap-2 text-sm font-semibold text-white px-7 py-3.5 rounded-full bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40 hover:-translate-y-0.5 active:scale-95 transition-all duration-200"
               >
                 <span>Join as Creator</span>
-                <Icons.ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" />
               </Link>
 
               <Link
@@ -63,7 +63,7 @@ export function HeroSection() {
                 className="inline-flex items-center gap-2 text-sm font-semibold text-[#151c27] px-7 py-3.5 rounded-full bg-white border border-[#ccc3d8]/60 shadow-sm hover:border-[#7C3AED] hover:text-[#630ed4] transition-all duration-200"
               >
                 <span>Hire Creators</span>
-                <Icons.ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
 
@@ -135,7 +135,7 @@ export function HeroSection() {
                 {/* Floating Overlay Badge 1: Top Left */}
                 <div className="absolute top-4 left-2 bg-white/90 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/60 shadow-lg flex items-center gap-2">
                   <span className="p-1.5 rounded-xl bg-purple-100 text-[#7C3AED]">
-                    <Icons.Camera className="w-4 h-4" />
+                    <Camera className="w-4 h-4" />
                   </span>
                   <div>
                     <p className="text-xs font-bold text-[#151c27]">Travel creator</p>
@@ -148,7 +148,7 @@ export function HeroSection() {
                 {/* Floating Overlay Badge 2: Right */}
                 <div className="absolute top-20 right-2 bg-white/90 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/60 shadow-lg flex items-center gap-2">
                   <span className="p-1.5 rounded-xl bg-blue-100 text-[#4F46E5]">
-                    <Icons.Megaphone className="w-4 h-4" />
+                    <Megaphone className="w-4 h-4" />
                   </span>
                   <div>
                     <p className="text-xs font-bold text-[#151c27]">Campaign ready</p>
@@ -161,7 +161,7 @@ export function HeroSection() {
                 {/* Floating Overlay Badge 3: Bottom Left */}
                 <div className="absolute bottom-4 left-6 bg-white/90 backdrop-blur-md px-3.5 py-2 rounded-2xl border border-white/60 shadow-lg flex items-center gap-2">
                   <span className="p-1.5 rounded-xl bg-amber-100 text-amber-600">
-                    <Icons.Sparkles className="w-4 h-4" />
+                    <Sparkles className="w-4 h-4" />
                   </span>
                   <div>
                     <p className="text-xs font-bold text-[#151c27]">Verified creators</p>
@@ -205,7 +205,7 @@ export function HeroSection() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1">
                 <p className="text-sm font-bold text-[#151c27] truncate">Arun Roy</p>
-                <Icons.BadgeCheck className="w-4 h-4 text-emerald-500 fill-emerald-500/10 shrink-0" />
+                <BadgeCheck className="w-4 h-4 text-emerald-500 fill-emerald-500/10 shrink-0" />
               </div>
               <p className="text-[11px] text-[#7b7487] truncate">
                 Tech · Agartala, Tripura

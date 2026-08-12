@@ -1,5 +1,5 @@
 import Link from "next/link";
-import * as Icons from "lucide-react";
+import { ArrowLeft, MoveRight, resolveIcon } from "@/lib/icons";
 import { directoryCategories } from "@/lib/directory-data";
 
 export function CategoriesPage() {
@@ -8,7 +8,7 @@ export function CategoriesPage() {
       <div className="container-app">
         <div className="rounded-[38px] border border-white/80 bg-white/90 p-6 shadow-[0_24px_60px_rgba(15,23,42,0.12)] md:p-8">
           <Link href="/find-creators" className="inline-flex items-center gap-2 rounded-full border border-border-light bg-background px-4 py-2 text-sm font-medium text-text-secondary">
-            <Icons.ArrowLeft className="h-4 w-4" /> Back to directory
+            <ArrowLeft className="h-4 w-4" /> Back to directory
           </Link>
 
           <div className="mt-6 max-w-3xl">
@@ -19,7 +19,7 @@ export function CategoriesPage() {
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {directoryCategories.map((category) => {
-              const Icon = Icons[category.icon as keyof typeof Icons] as React.ComponentType<{ className?: string }>;
+              const Icon = resolveIcon(category.icon) as React.ComponentType<{ className?: string }>;
 
               return (
                 <Link
@@ -37,7 +37,7 @@ export function CategoriesPage() {
                   <p className="mt-2 text-sm leading-7 text-text-muted">View creators who fit this category and open a filtered directory view instantly.</p>
                   <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary-600">
                     Explore category
-                    <Icons.MoveRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+                    <MoveRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
                   </div>
                 </Link>
               );

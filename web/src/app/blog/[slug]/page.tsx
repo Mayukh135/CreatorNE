@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, CalendarDays, Clock3 } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock3 } from "@/lib/icons";
 import { APP_CONFIG } from "@/lib/constants";
 import { blogPosts } from "@/lib/content-data";
 

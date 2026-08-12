@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import * as Icons from "lucide-react";
+import { ArrowRight } from "@/lib/icons";
 import { CreatorCard, type CreatorData } from "@/components/ui/CreatorCard";
 
 interface FeaturedCreatorsSectionProps {
@@ -26,7 +26,7 @@ export function FeaturedCreatorsSection({ creators }: FeaturedCreatorsSectionPro
             className="inline-flex items-center gap-2 text-sm font-bold text-[#630ed4] hover:text-[#7C3AED] transition-colors"
           >
             <span>Search full directory</span>
-            <Icons.ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 

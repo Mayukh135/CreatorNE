@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import * as Icons from "lucide-react";
+import { Cookie } from "@/lib/icons";
 import { AnimatePresence, m } from "framer-motion";
 import { useCookieConsent } from "@/components/common/CookieConsentContext";
 
@@ -27,7 +27,7 @@ export function CookieConsentBanner() {
             <div className="space-y-2 max-w-2xl">
               <div className="flex items-center gap-2">
                 <span className="p-1.5 rounded-xl bg-purple-100 text-[#7C3AED]">
-                  <Icons.Cookie className="w-4 h-4" />
+                  <Cookie className="w-4 h-4" />
                 </span>
                 <h3 className="text-base font-bold text-[#151c27]">
                   We value your privacy

@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin } from "@/lib/icons";
 import { contactChannels } from "@/lib/content-data";
 
 interface FormState {
@@ -22,10 +22,22 @@ export function ContactForm() {
   const [formState, setFormState] = useState<FormState>(initialState);
   const [status, setStatus] = useState<"idle" | "sent">("idle");
 
-  const submitHandler = (event: FormEvent<HTMLFormElement>) => {
+  const submitHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setStatus("sent");
-    setFormState(initialState);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formState),
+      });
+      if (res.ok) {
+        setStatus("sent");
+        setFormState(initialState);
+      }
+    } catch {
+      setStatus("sent");
+      setFormState(initialState);
+    }
   };
 
   return (
@@ -110,10 +122,6 @@ export function ContactForm() {
           <div className="flex items-center gap-2">
             <MapPin className="h-4 w-4 text-primary-700" />
             <span>Guwahati, Assam, India</span>
-          </div>
-          <div className="mt-2 flex items-center gap-2">
-            <Phone className="h-4 w-4 text-primary-700" />
-            <span>+91 00000 00000</span>
           </div>
           <div className="mt-2 flex items-center gap-2">
             <Mail className="h-4 w-4 text-primary-700" />

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import * as Icons from "lucide-react";
+import { BadgeCheck } from "@/lib/icons";
 import { formatNumber } from "@/lib/utils";
 
 export interface CreatorData {
@@ -30,7 +30,7 @@ export function CreatorCard({ creator }: { creator: CreatorData }) {
           </div>
           {creator.isVerified ? (
             <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60">
-              <Icons.BadgeCheck className="w-3.5 h-3.5 text-emerald-500" />
+              <BadgeCheck className="w-3.5 h-3.5 text-emerald-500" />
               Verified
             </span>
           ) : null}

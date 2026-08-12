@@ -1,5 +1,5 @@
 import Link from "next/link";
-import * as Icons from "lucide-react";
+import { ArrowLeft, Building2, UserRound, MapPin, Clock3, Target } from "@/lib/icons";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { APP_CONFIG } from "@/lib/constants";
 import { brandProfiles } from "@/lib/brand-data";
@@ -35,7 +35,7 @@ export function BrandProfilePage({ slug }: { slug: string }) {
             <div className="relative flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl">
                 <Link href="/" className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-sm">
-                  <Icons.ArrowLeft className="h-4 w-4" /> Back to home
+                  <ArrowLeft className="h-4 w-4" /> Back to home
                 </Link>
                 <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-end">
                   <div className="flex h-24 w-24 items-center justify-center rounded-[28px] border-4 border-white/40 bg-white/15 text-3xl font-semibold backdrop-blur-sm">
@@ -47,7 +47,7 @@ export function BrandProfilePage({ slug }: { slug: string }) {
                   </div>
                   <div>
                     <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] backdrop-blur-sm">
-                      <Icons.Building2 className="h-4 w-4 text-gold" />
+                      <Building2 className="h-4 w-4 text-gold" />
                       {brand.industry}
                     </div>
                     <h1 className="mt-4 text-4xl font-semibold tracking-tight md:text-5xl">{brand.brandName}</h1>
@@ -69,10 +69,10 @@ export function BrandProfilePage({ slug }: { slug: string }) {
               <SectionCard title="About">
                 <p className="max-w-3xl text-base leading-8 text-text-secondary">{brand.description}</p>
                 <div className="mt-5 flex flex-wrap gap-3">
-                  <Pill icon={Icons.UserRound}>{brand.contactPerson}</Pill>
-                  <Pill icon={Icons.MapPin}>{brand.targetState}</Pill>
-                  <Pill icon={Icons.Clock3}>{brand.timeline}</Pill>
-                  <Pill icon={Icons.Target}>{brand.campaignGoal}</Pill>
+                  <Pill icon={UserRound}>{brand.contactPerson}</Pill>
+                  <Pill icon={MapPin}>{brand.targetState}</Pill>
+                  <Pill icon={Clock3}>{brand.timeline}</Pill>
+                  <Pill icon={Target}>{brand.campaignGoal}</Pill>
                 </div>
               </SectionCard>
 

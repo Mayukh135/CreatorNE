@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import * as Icons from "lucide-react";
+import { ShieldCheck, Sliders } from "@/lib/icons";
 import { useCookieConsent } from "@/components/common/CookieConsentContext";
 
 export function CookiePolicyContent() {
@@ -12,7 +12,7 @@ export function CookiePolicyContent() {
       {/* Header */}
       <div className="space-y-3">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-100 border border-purple-200 text-xs font-bold text-[#630ed4]">
-          <Icons.ShieldCheck className="w-4 h-4 text-[#7C3AED]" />
+          <ShieldCheck className="w-4 h-4 text-[#7C3AED]" />
           <span>Legal & Transparency</span>
         </div>
         <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-[#151c27]">
@@ -38,7 +38,7 @@ export function CookiePolicyContent() {
           onClick={openModal}
           className="inline-flex items-center gap-2 text-xs font-bold text-white px-5 py-3 rounded-full bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] shadow-md shadow-purple-500/20 hover:shadow-purple-500/35 transition-all shrink-0"
         >
-          <Icons.Sliders className="w-4 h-4" />
+          <Sliders className="w-4 h-4" />
           <span>Manage Preferences</span>
         </button>
       </div>
