@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "CreatorNE",
+    "slug": "creatorne",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "creatorne",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "in.creatorne.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "CreatorNE needs camera access for profile photos.",
+        "NSPhotoLibraryUsageDescription": "CreatorNE needs photo library access for profile photos."
+      }
+    },
+    "android": {
+      "package": "in.creatorne.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#7c3aed",
+        "foregroundImage": "./assets/icon.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-web-browser",
+      "expo-font",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#f8fafc",
+          "image": "./assets/icon.png",
+          "imageWidth": 120
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
+    }
+  }
+}
