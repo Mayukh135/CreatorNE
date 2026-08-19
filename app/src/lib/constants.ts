@@ -91,6 +91,7 @@ export const AppConfig = {
   supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://your-project.supabase.co',
   supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key',
   instagramAppId: process.env.EXPO_PUBLIC_INSTAGRAM_APP_ID || 'your-instagram-app-id',
+  expoProjectId: process.env.EXPO_PUBLIC_PROJECT_ID || 'your-expo-project-id',
 } as const;
 
 /** Phone country code */
