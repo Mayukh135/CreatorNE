@@ -15,6 +15,7 @@ import OtpScreen from '../screens/OtpScreen';
 import NameEntryScreen from '../screens/NameEntryScreen';
 import SocialConnectScreen from '../screens/SocialConnectScreen';
 import InstagramConnectScreen from '../screens/InstagramConnectScreen';
+import LowFollowersScreen from '../screens/LowFollowersScreen';
 import HomeScreen from '../screens/HomeScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -60,6 +61,10 @@ export function AppNavigator() {
         <Stack.Screen
           name="InstagramConnect"
           component={InstagramConnectScreen}
+        />
+        <Stack.Screen
+          name="LowFollowers"
+          component={LowFollowersScreen}
         />
         <Stack.Screen
           name="Home"

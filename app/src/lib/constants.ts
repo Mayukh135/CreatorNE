@@ -104,3 +104,6 @@ export const SPLASH_DELAY = 2500;
 
 /** OTP resend cooldown (seconds) */
 export const OTP_RESEND_COOLDOWN = 30;
+
+/** Minimum Instagram followers required for creators */
+export const MIN_FOLLOWERS = 1000;

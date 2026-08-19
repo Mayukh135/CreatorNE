@@ -14,6 +14,7 @@ export type OnboardingStep =
   | 'name-entry'
   | 'social-connect'
   | 'instagram-connect'
+  | 'low-followers'
   | 'complete';
 
 /** Navigation stack param list */
@@ -25,6 +26,7 @@ export type RootStackParamList = {
   NameEntry: { role: UserRole; phone: string };
   SocialConnect: { role: UserRole; phone: string; name: string };
   InstagramConnect: { role: UserRole; phone: string; name: string };
+  LowFollowers: { role: UserRole; phone: string; name: string; followerCount: number };
   Home: undefined;
 };
 

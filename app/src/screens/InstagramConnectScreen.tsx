@@ -17,7 +17,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Button } from '../components/Button';
 import { SocialProofBanner } from '../components/SocialProofBanner';
-import { Colors, Fonts, Radius, Spacing, AppConfig } from '../lib/constants';
+import { Colors, Fonts, Radius, Spacing, AppConfig, MIN_FOLLOWERS } from '../lib/constants';
 import { getInstagramAuthUrl, getMockInstagramProfile } from '../lib/instagram';
 import { getSession } from '../lib/supabase';
 import { setOnboardingComplete } from '../lib/storage';
@@ -70,6 +70,19 @@ export default function InstagramConnectScreen({ navigation, route }: Props) {
             );
 
             if (response.ok) {
+              const profileData = await response.json();
+
+              // Check follower count for creators
+              if (role === 'CREATOR' && profileData?.followersCount < MIN_FOLLOWERS) {
+                navigation.navigate('LowFollowers', {
+                  role,
+                  phone,
+                  name,
+                  followerCount: profileData.followersCount || 0,
+                });
+                return;
+              }
+
               await completeOnboarding();
               return;
             }
