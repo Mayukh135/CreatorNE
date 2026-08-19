@@ -1,4 +1,4 @@
-import { CreatorDashboard } from "@/components/creator/CreatorDashboard";
+import { CreatorDashboard } from "@/components/pages/CreatorDashboard";
 
 export default function CreatorDashboardRoute() {
   return <CreatorDashboard />;

@@ -1,5 +1,5 @@
-import { AuthPage } from "@/components/auth/AuthPage";
+import { AuthFlow } from "@/components/auth/AuthFlow";
 
 export default function LoginPage() {
-  return <AuthPage mode="login" initialAudience="creator" />;
+  return <AuthFlow />;
 }

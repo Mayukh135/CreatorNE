@@ -89,9 +89,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: Spacing.sm,
     marginVertical: Spacing.xl,
+    paddingHorizontal: Spacing.sm,
   },
   input: {
-    width: 48,
+    flex: 1,
+    maxWidth: 52,
     height: 56,
     borderRadius: Radius.md,
     borderWidth: 1.5,

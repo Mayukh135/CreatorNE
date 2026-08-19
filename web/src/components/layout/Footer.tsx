@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { resolveIcon, Globe } from "@/lib/icons";
 import type { LucideIcon } from "@/lib/icons";
 import { APP_CONFIG, SOCIAL_LINKS } from "@/lib/constants";
-import { useCookieConsent } from "@/components/common/CookieConsentContext";
+import { useCookieConsent } from "@/components/ui/CookieConsentContext";
 
 export function Footer() {
   const pathname = usePathname();

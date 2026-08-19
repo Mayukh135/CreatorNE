@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Compass, ShieldCheck, Sparkles, UsersRound } from "@/lib/icons";
-import { SectionHeader } from "@/components/content/SectionHeader";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { APP_CONFIG } from "@/lib/constants";
 import { aboutMilestones, aboutValues, contentPageSummary } from "@/lib/content-data";
 

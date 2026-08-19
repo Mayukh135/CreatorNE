@@ -114,6 +114,7 @@ export async function POST(request: NextRequest) {
             userId: dbUser.id,
             name,
             slug,
+            city: "",
             state: "Assam", // Default, can be updated later
             category: "Others",
             languages: [],

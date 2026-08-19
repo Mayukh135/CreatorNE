@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
-import { JsonLd } from "@/components/seo/JsonLd";
+import { JsonLd } from "@/components/ui/JsonLd";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { CookieConsentProvider } from "@/components/common/CookieConsentContext";
-import { CookieConsentBanner } from "@/components/common/CookieConsentBanner";
-import { CookiePreferencesModal } from "@/components/common/CookiePreferencesModal";
+import { CookieConsentProvider } from "@/components/ui/CookieConsentContext";
+import { CookieConsentBanner } from "@/components/ui/CookieConsentBanner";
+import { CookiePreferencesModal } from "@/components/ui/CookiePreferencesModal";
 import { APP_CONFIG } from "@/lib/constants";
 import "./globals.css";
 

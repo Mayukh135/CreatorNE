@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Cookie } from "@/lib/icons";
 import { AnimatePresence, m } from "framer-motion";
-import { useCookieConsent } from "@/components/common/CookieConsentContext";
+import { useCookieConsent } from "@/components/ui/CookieConsentContext";
 
 export function CookieConsentBanner() {
   const { isBannerVisible, acceptAll, rejectNonEssential, openModal } =

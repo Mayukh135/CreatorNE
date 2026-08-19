@@ -1,4 +1,4 @@
-import { FindCreatorsPage } from "@/components/directory/FindCreatorsPage";
+import { FindCreatorsPage } from "@/components/pages/FindCreatorsPage";
 
 export default async function FindCreatorsRoute({
   searchParams,

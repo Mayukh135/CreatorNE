@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, BadgeCheck, MapPin, Globe, Clock3, Star } from "@/lib/icons";
-import { JsonLd } from "@/components/seo/JsonLd";
+import { JsonLd } from "@/components/ui/JsonLd";
 import { APP_CONFIG } from "@/lib/constants";
 import { creatorProfiles } from "@/lib/creator-data";
 import { cn, formatNumber } from "@/lib/utils";

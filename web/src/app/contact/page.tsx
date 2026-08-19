@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { SectionHeader } from "@/components/content/SectionHeader";
-import { ContactForm } from "@/components/content/ContactForm";
+import { SectionHeader } from "@/components/ui/SectionHeader";
+import { ContactForm } from "@/components/pages/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact",

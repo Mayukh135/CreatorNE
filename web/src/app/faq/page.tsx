@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { FaqAccordion } from "@/components/content/FaqAccordion";
-import { SectionHeader } from "@/components/content/SectionHeader";
+import { FaqAccordion } from "@/components/pages/FaqAccordion";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { staticFaqs } from "@/lib/content-data";
 
 export const metadata: Metadata = {

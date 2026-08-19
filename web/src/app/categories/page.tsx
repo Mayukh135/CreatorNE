@@ -1,4 +1,4 @@
-import { CategoriesPage } from "@/components/directory/CategoriesPage";
+import { CategoriesPage } from "@/components/pages/CategoriesPage";
 
 export default function CategoriesRoute() {
   return <CategoriesPage />;

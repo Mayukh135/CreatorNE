@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { SectionHeader } from "@/components/content/SectionHeader";
+import { SectionHeader } from "@/components/ui/SectionHeader";
 import { legalLastUpdated, privacySections } from "@/lib/content-data";
 
 export const metadata: Metadata = {

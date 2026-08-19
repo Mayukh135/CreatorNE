@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft, Building2, UserRound, MapPin, Clock3, Target } from "@/lib/icons";
-import { JsonLd } from "@/components/seo/JsonLd";
+import { JsonLd } from "@/components/ui/JsonLd";
 import { APP_CONFIG } from "@/lib/constants";
 import { brandProfiles } from "@/lib/brand-data";
 import { cn } from "@/lib/utils";

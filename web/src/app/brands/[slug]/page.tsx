@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { BrandProfilePage } from "@/components/brand/BrandProfilePage";
+import { BrandProfilePage } from "@/components/pages/BrandProfilePage";
 import { brandProfiles } from "@/lib/brand-data";
 
 export function generateStaticParams() {

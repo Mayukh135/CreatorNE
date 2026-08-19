@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   gradient: {
     padding: Spacing.lg,
-    minHeight: 220,
+    minHeight: 200,
     justifyContent: 'space-between',
   },
   iconArea: {

@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { CreatorProfilePage } from "@/components/creator/CreatorProfilePage";
+import { CreatorProfilePage } from "@/components/pages/CreatorProfilePage";
 import { creatorProfiles } from "@/lib/creator-data";
 
 export function generateStaticParams() {

@@ -1,4 +1,4 @@
-import { AuthPage } from "@/components/auth/AuthPage";
+import { AuthFlow } from "@/components/auth/AuthFlow";
 
 export default async function RegisterPage({
   searchParams,
@@ -8,8 +8,7 @@ export default async function RegisterPage({
   const resolvedSearchParams = await searchParams;
 
   return (
-    <AuthPage
-      mode="register"
+    <AuthFlow
       initialAudience={resolvedSearchParams?.type === "brand" ? "brand" : "creator"}
     />
   );

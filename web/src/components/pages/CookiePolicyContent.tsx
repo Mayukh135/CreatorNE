@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ShieldCheck, Sliders } from "@/lib/icons";
-import { useCookieConsent } from "@/components/common/CookieConsentContext";
+import { useCookieConsent } from "@/components/ui/CookieConsentContext";
 
 export function CookiePolicyContent() {
   const { openModal } = useCookieConsent();

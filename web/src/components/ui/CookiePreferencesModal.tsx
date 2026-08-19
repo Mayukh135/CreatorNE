@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Sliders, X, Lock } from "@/lib/icons";
 import { AnimatePresence, m } from "framer-motion";
-import { useCookieConsent } from "@/components/common/CookieConsentContext";
+import { useCookieConsent } from "@/components/ui/CookieConsentContext";
 import { CookiePreferences } from "@/lib/cookie-consent";
 
 export function CookiePreferencesModal() {
